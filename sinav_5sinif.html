@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>5. Sınıf Karma Test</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', Tahoma, sans-serif;
+    background: #f0f4f8;
+    color: #1a1a2e;
+    min-height: 100vh;
+  }
+  header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    color: white;
+    padding: 24px 20px;
+    text-align: center;
+  }
+  header h1 { font-size: 22px; font-weight: 700; letter-spacing: 0.5px; }
+  header p { font-size: 13px; margin-top: 6px; opacity: 0.75; }
+
+  .progress-bar-wrap {
+    background: #e2e8f0;
+    height: 6px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .progress-bar {
+    height: 6px;
+    background: linear-gradient(90deg, #4f46e5, #7c3aed);
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .container { max-width: 800px; margin: 0 auto; padding: 20px 16px 80px; }
+
+  .ders-baslik {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 14px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #c7d2fe;
+  }
+  .ders-baslik .icon {
+    width: 36px; height: 36px;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+  .ders-baslik h2 { font-size: 16px; font-weight: 700; color: #1a1a2e; }
+  .ders-baslik span { font-size: 12px; color: #64748b; }
+
+  .soru-kart {
+    background: white;
+    border-radius: 12px;
+    padding: 18px 18px 14px;
+    margin-bottom: 14px;
+    border: 1.5px solid #e2e8f0;
+    transition: border-color 0.2s;
+  }
+  .soru-kart.dogru { border-color: #22c55e; background: #f0fdf4; }
+  .soru-kart.yanlis { border-color: #ef4444; background: #fff5f5; }
+
+  .soru-no { font-size: 11px; font-weight: 700; color: #94a3b8; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .soru-metin { font-size: 14px; line-height: 1.6; color: #1e293b; margin-bottom: 14px; white-space: pre-line; }
+
+  .secenekler { display: flex; flex-direction: column; gap: 8px; }
+  .secenek {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1.5px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 0.15s;
+    background: white;
+    font-size: 13.5px;
+    line-height: 1.5;
+    text-align: left;
+    width: 100%;
+  }
+  .secenek:hover { border-color: #a5b4fc; background: #eef2ff; }
+  .secenek .harf {
+    min-width: 24px; height: 24px;
+    border-radius: 50%;
+    background: #e2e8f0;
+    color: #475569;
+    font-weight: 700;
+    font-size: 12px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .secenek.secildi { border-color: #6366f1; background: #eef2ff; }
+  .secenek.secildi .harf { background: #6366f1; color: white; }
+  .secenek.dogru-cevap { border-color: #22c55e !important; background: #f0fdf4 !important; }
+  .secenek.dogru-cevap .harf { background: #22c55e !important; color: white !important; }
+  .secenek.yanlis-cevap { border-color: #ef4444 !important; background: #fff5f5 !important; }
+  .secenek.yanlis-cevap .harf { background: #ef4444 !important; color: white !important; }
+  .secenek[disabled] { cursor: default; }
+
+  .aciklama {
+    margin-top: 10px;
+    padding: 10px 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border-left: 3px solid #6366f1;
+    font-size: 12.5px;
+    color: #374151;
+    line-height: 1.55;
+    display: none;
+  }
+  .aciklama.gorunu { display: block; }
+
+  .buton-alan { text-align: center; margin-top: 36px; }
+  #sonucBtn {
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: white;
+    border: none;
+    padding: 14px 40px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    letter-spacing: 0.3px;
+  }
+  #sonucBtn:hover { opacity: 0.92; transform: translateY(-1px); }
+  #sonucBtn:disabled { background: #94a3b8; cursor: default; transform: none; }
+
+  #sonucPanel {
+    display: none;
+    background: white;
+    border-radius: 16px;
+    padding: 32px 24px;
+    margin-top: 32px;
+    border: 2px solid #6366f1;
+    text-align: center;
+  }
+  #sonucPanel h2 { font-size: 22px; font-weight: 800; margin-bottom: 6px; }
+  #sonucPanel .puan { font-size: 48px; font-weight: 900; margin: 16px 0; color: #4f46e5; }
+  #sonucPanel .mesaj { font-size: 15px; color: #475569; margin-bottom: 24px; line-height: 1.6; }
+
+  .ders-ozet {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+    margin: 20px 0;
+    text-align: left;
+  }
+  .ders-ozet-kart {
+    background: #f8fafc;
+    border-radius: 10px;
+    padding: 12px 14px;
+    border: 1px solid #e2e8f0;
+  }
+  .ders-ozet-kart .ders-adi { font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 6px; }
+  .ders-ozet-kart .d-y { display: flex; gap: 10px; font-size: 13px; }
+  .d-puan { font-weight: 700; font-size: 14px; margin-top: 4px; }
+
+  .tekrar-btn {
+    background: white;
+    color: #4f46e5;
+    border: 2px solid #4f46e5;
+    padding: 11px 30px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tekrar-btn:hover { background: #eef2ff; }
+
+  .bos-uyari {
+    background: #fffbeb;
+    border: 1px solid #fbbf24;
+    color: #92400e;
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-size: 13px;
+    margin-top: 14px;
+    display: none;
+  }
+
+  @media (max-width: 480px) {
+    .soru-metin { font-size: 13px; }
+    .secenek { font-size: 13px; }
+    header h1 { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📚 5. Sınıf Karma Test</h1>
+  <p>6 Ders · 60 Soru · Seçeneklere tıklayarak cevapla</p>
+</header>
+<div class="progress-bar-wrap"><div class="progress-bar" id="progressBar"></div></div>
+
+<div class="container" id="testAlani"></div>
+
+<script>
+const dersler = [
+  {
+    ad: "Matematik", konu: "İşlem Önceliği", icon: "📐", renk: "#6366f1",
+    sorular: [
+      { soru: "Ayşe teyze, marketten tanesi 15 TL olan çikolatalardan 3 tane ve fiyatı 20 TL olan bir kutu süt almıştır. Kasaya geldiğinde ödeyeceği toplam tutarı zihinden hesaplamak isteyen Ayşe teyzenin kurması gereken doğru matematiksel ifade aşağıdakilerden hangisidir?", secenekler: ["3 + 15 × 20","3 × 15 + 20","3 × (15 + 20)","(3 + 15) × 20"], dogru: 1, aciklama: "Çikolatalar için önce çarpma (3 × 15), sonra süt için toplama (+ 20) yapılmalıdır." },
+      { soru: "Kumbarasında 100 TL birikmiş parası olan Kerem, harçlıklarından her hafta 20 TL artırarak 4 hafta boyunca kumbarasına atmaya karar vermiştir. Dört haftanın sonunda Kerem'in kumbarasındaki toplam parayı veren işlem aşağıdakilerden hangisidir?", secenekler: ["(100 + 20) × 4","100 + 20 × 4","100 × 4 + 20","(100 − 20) × 4"], dogru: 1, aciklama: "Başlangıç parasına 4 haftalık birikim eklenir; işlem önceliğine göre çarpma önce yapılır: 100 + (20 × 4)." },
+      { soru: "Öğretmen, 30 kişilik bir sınıfa getirdiği 50 adet şekerin 2 tanesini kendisine ayırmış, geriye kalan şekerleri ise 4 öğrenciye eşit olarak paylaştırmıştır. Bu durumu anlatan sayı cümlesi aşağıdakilerden hangisidir?", secenekler: ["50 − 2 ÷ 4","(50 − 2) ÷ 4","50 ÷ 4 − 2","50 ÷ (4 − 2)"], dogru: 1, aciklama: "Kalan şeker için çıkarma önce yapılmalı; bu nedenle (50 − 2) parantez içine alınır." },
+      { soru: "Bir fırıncı, sabah çıkardığı her biri 10 ekmek alan 5 kasa ekmeğin yanına, fazladan 8 ekmek daha koyarak bakkala göndermiştir. Bakkala giden toplam ekmek sayısını gösteren işlem hangisidir?", secenekler: ["5 × (10 + 8)","5 + 10 × 8","5 × 10 + 8","(5 + 10) × 8"], dogru: 2, aciklama: "Kasa × içindeki ekmek (5 × 10), sonra fazladan ekmekler eklenir (+ 8)." },
+      { soru: "Ali, hesap makinesinde \"24 − 8 ÷ 2\" işlemini tuşlarken, makinenin işlem önceliğine dikkat etmeyen basit bir cihaz olduğunu fark eder. Makine işlemleri soldan sağa sırayla yapmaktadır. Bu makinenin bulduğu sonuç ile gerçek, doğru matematiksel sonuç arasındaki fark kaçtır?", secenekler: ["12","8","4","0"], dogru: 0, aciklama: "Makine: (24−8)÷2 = 8. Doğru: 24−(8÷2) = 20. Fark: 20 − 8 = 12." },
+      { soru: "Bir kargo firması, taşıma kapasitesi 200 kg olan bir araca, her biri 15 kg ağırlığında olan 10 adet koli yüklemiştir. Araçta kaç kilogramlık daha yer kaldığını bulmak isteyen görevli aşağıdaki adımlardan hangisini uygulamalıdır?", secenekler: ["200'den 15'i çıkarıp 10 ile çarpar","10 ile 15'i çarpıp sonucu 200'den çıkarır","200'ü 10'a bölüp 15 çıkarır","200 ile 10'u toplayıp 15'e böler"], dogru: 1, aciklama: "Toplam yük = 10 × 15 = 150; kalan yer = 200 − 150 = 50 kg." },
+      { soru: "Elif, okul projesi için bir kartona 4 sıra çiziyor. Her sıraya 4 kare, her karenin içine de 4 tane yıldız etiketi yapıştırıyor. Elif'in kullandığı toplam yıldız etiket sayısını üslü ifade kullanarak gösteren işlem hangisidir?", secenekler: ["4 × 3","4² + 4","4³","3⁴"], dogru: 2, aciklama: "4 sıra × 4 kare × 4 yıldız = 4 × 4 × 4 = 4³." },
+      { soru: "Bir teknoloji mağazasında, fiyatı 8000 TL olan bir bilgisayar için 2000 TL peşinat ödeyen Veli Bey, kalan tutarı 6 eşit taksite böldürmüştür. Veli Bey'in aylık taksit tutarını hesaplamak için kullanacağı işlem aşağıdakilerden hangisi olmalıdır?", secenekler: ["8000 − (2000 ÷ 6)","(8000 − 2000) ÷ 6","8000 ÷ 6 − 2000","8000 ÷ (6 − 2)"], dogru: 1, aciklama: "Önce peşinat düşülür (parantez içi), sonra kalan taksit sayısına bölünür." },
+      { soru: "Mete, matematik dersinde tahtaya yazılan \"30 + 10 × 2 − 5\" işleminin sonucunu hesaplarken yanlışlıkla önce toplama, sonra çarpma, en son çıkarma işlemini yapmıştır. Mete'nin bulduğu hatalı sonuç, doğru sonuçtan kaç fazladır?", secenekler: ["30","45","75","50"], dogru: 0, aciklama: "Doğru: 30 + 20 − 5 = 45. Mete: (30+10)×2−5 = 75. Fark: 75 − 45 = 30." },
+      { soru: "Bir sinema salonunda 12 sıra ve her sırada 15 koltuk bulunmaktadır. Film başlamadan önce 3 sıranın tamamen boş olduğu görülmüştür. Dolu koltuk sayısını dağılma özelliğini kullanarak gösteren sayı cümlesi aşağıdakilerden hangisidir?", secenekler: ["15 × (12 − 3)","12 × 15 − 3","(15 − 3) × 12","12 × (15 − 3)"], dogru: 0, aciklama: "Her sırada 15 koltuk sabit; dolu sıra sayısı (12 − 3) = 9, toplamda 15 × 9." }
+    ]
+  },
+  {
+    ad: "Fen Bilimleri", konu: "Devre Elemanlarının Sembolle Gösterimi", icon: "🔬", renk: "#0ea5e9",
+    sorular: [
+      { soru: "Zeynep, defterine kurduğu bir el feneri devresini çizerken düz çizgilere, yuvarlak içinde çarpı işaretlerine ve yan yana duran biri uzun diğeri kısa paralel çizgilere yer vermiştir. Zeynep bu çizimiyle devrede hangi malzemenin olduğunu göstermemiştir?", secenekler: ["Ampul","Pil","Anahtar","Kablo"], dogru: 2, aciklama: "Çizimde ampul (yuvarlak içi ×), kablo (düz çizgi) ve pil (uzun/kısa çizgi) var; anahtar sembolü eksik." },
+      { soru: "Bir grup öğrenci bilim fuarı için devre çizimlerinde resim yerine bilimsel semboller kullanmaları gerektiğini öğrenmiştir. Öğretmenin bu uyarısının temel nedeni aşağıdakilerden hangisidir?", secenekler: ["Resim çizmenin daha fazla mürekkep tüketmesi","Sembollerin tüm dünyada ortak bilimsel dil oluşturması","Sembollerin devreye daha fazla enerji sağlaması","Resim çizmenin sadece mühendislerin yapabileceği bir iş olması"], dogru: 1, aciklama: "Semboller evrensel bir dil oluşturur; farklı ülkelerden insanlar aynı şemayı anlayabilir." },
+      { soru: "Kerem, evdeki bozuk oyuncağın içinde iki pilin birbirine bağlandığı plastik bir yuva görmüştür. Bu plastik yuvayı şemada nasıl göstermesi gerekir?", secenekler: ["Yan yana iki yuvarlak çizerek","Sadece iki pil sembolü çizerek","Uzun ve kalın bir çizgi çekerek","Pil yatağının özel sembolü olmadığı için pilleri sembolle bağlayarak"], dogru: 3, aciklama: "Pil yatağı için standart bir sembol yoktur; şemada sadece piller sembolle gösterilir." },
+      { soru: "Ece, odasının ışığını yakmak için duvardaki düğmeye bastığında tavan lambası yanmıştır. Ece, bu düğmenin görevini devre şemasında çizerek göstermek isterse hangi sembolü kullanmalıdır?", secenekler: ["Yuvarlak içinde çarpı işareti","İki ucu açık düz hat","Temas eden iki nokta arasındaki çizgi (kapalı anahtar)","Yan yana biri uzun biri kısa çizgi"], dogru: 2, aciklama: "Düğme devreyi tamamlar; şemada kapalı anahtar sembolü kullanılır." },
+      { soru: "Murat'ın çizdiği devre şemasında iki pil, bir ampul ve açık konumda çizilmiş bir anahtar bulunmaktadır. Bu şemaya bakarak aynı devreyi kurarsa nasıl bir sonuçla karşılaşır?", secenekler: ["Ampul parlak yanar","Piller aşırı ısınır","Anahtar açık olduğu için devre tamamlanmaz ve ampul yanmaz","Kablolar kopar"], dogru: 2, aciklama: "Açık anahtar devreyi keser; elektrik akamaz, ampul yanmaz." },
+      { soru: "Cemil, devresindeki pil sayısını 1'den 3'e çıkarmış, diğer elemanlara dokunmamıştır. Bu değişiklik gerçek devrede ne gibi fark oluşturur?", secenekler: ["Ampulün parlaklığını artırır","Ampulün yanmasını engeller","Kabloların uzamasına neden olur","Anahtarın kapanmasını sağlar"], dogru: 0, aciklama: "Fazla pil daha fazla enerji demektir; ampul daha parlak yanar." },
+      { soru: "Aşağıdaki durumlardan hangisinde bir öğrencinin devre elemanlarını sembollerle göstermesine gerek yoktur?", secenekler: ["Devreyi Japonya'daki arkadaşına mail ile anlatırken","Bilimsel deneyi defterine kaydederken","Pillerin şeklini ve rengini resim dersinde çizerken","Elektronik cihazın kullanım kılavuzunu hazırlarken"], dogru: 2, aciklama: "Resim dersinde fiziksel görünüm çizilir; bilimsel devre sembolleri gerekmez." },
+      { soru: "Bir öğrenci devre şemasında pil sembolü ile ampul sembolü arasında hiçbir bağlayıcı çizgi kullanmamıştır. Bu devre kurulduğunda hangi sorunla karşılaşılır?", secenekler: ["Anahtarın bozuk olduğu anlaşılır","Piller ters takılmış görünür","Bağlantı kablosu eksik olduğu için enerji ampule ulaşamaz","Ampulün patlamış olduğu ortaya çıkar"], dogru: 2, aciklama: "Şemada bağlantı çizgisi yoksa elektrik taşınamaz; ampul yanmaz." },
+      { soru: "Deniz mektubunda devresini şöyle tarif etmiştir: 'İki uzun-kısa çizgi grubum var; yuvarlak içindeki çarpıya ulaşan çizgi, oradan havaya kalkmış iki noktaya gelip başladığım yere dönüyor.' Devrede hangi malzeme kullanılmamıştır?", secenekler: ["İki adet pil","Kapalı anahtar","Bir adet ampul","Bağlantı kablosu"], dogru: 1, aciklama: "'Havaya kalkmış iki nokta' açık anahtar; devrede kapalı anahtar yoktur." },
+      { soru: "Ayşe şemasında 2 ampul, 1 pil ve 1 kapalı anahtar çizmiştir. Mert ise 2 ampul, 2 pil ve 1 kapalı anahtar çizmiştir. İki devreyi karşılaştırınca ne söylenebilir?", secenekler: ["Ayşe'nin devresinde daha fazla enerji üretilir","Mert'in devresi açık olduğu için çalışmaz","Mert'in devresindeki ampuller daha parlak yanar","Her iki devrede ampuller aynı parlaklıkta yanar"], dogru: 2, aciklama: "Mert'in pil sayısı fazla; ampul sayısı eşit olduğundan Mert'inkiler daha parlak yanar." }
+    ]
+  },
+  {
+    ad: "Türkçe", konu: "Sağlıklı Yaşıyorum", icon: "📖", renk: "#f59e0b",
+    sorular: [
+      { soru: "(I) Hafta sonu doğa yürüyüşüne katılan Can, uygun olmayan ayakkabı giydiği için yolun yarısında ayağını burkarak gruptan geri kalmıştır. (II) Oysa rehber, yürüyüşten önce uygun ekipman seçimi konusunda uyarmıştı. (III) Bu olay Can'a çok şey öğretmiş; sonraki yürüyüşünde ilk iş sağlam bir doğa ayakkabısı almıştır. (IV) Ormanda temiz hava eşliğinde yapılan yürüyüşler harika bir fırsattır.\n\nCan'ın yaşadığı tecrübeden bir ders çıkardığı hangi cümlede anlaşılmaktadır?", secenekler: ["I","II","III","IV"], dogru: 2, aciklama: "III. cümlede Can'ın olaydan öğrenip davranışını değiştirdiği açıkça ifade edilmektedir." },
+      { soru: "Obezite, günümüzde her yaş grubunu tehdit eden sessiz bir sorundur. İnsanların ekran başında geçirdiği hareketsiz saatler, zararlı yiyeceklerle birleşince vücut işlenemeyen bir enerji deposuna dönmektedir. Sağlığımızı korumak elimizdedir: Daha çok yürümek, paketli gıdalardan uzak durmak ve doğaya yönelmek en kesin çözümdür.\n\nMetnin ana fikri aşağıdakilerden hangisidir?", secenekler: ["Teknoloji insanların en büyük düşmanıdır","Obezite sadece çocukları etkiler","Sağlıklı ve hareketli alışkanlıklar benimseyerek obeziteden korunabiliriz","Paketli gıdalar eskiye göre daha ucuzdur"], dogru: 2, aciklama: "Metnin bütünü hareketsizlik ve kötü beslenmeden kaynaklanan obezitenin çözümünü vurgular." },
+      { soru: "Tolga, yemeğini bitirmeden masadan kalkan, sebzeleri görünce 'Ben doydum.' diyen bir çocuktur. Annesi ona her besin grubundan tüketmesi gerektiğini anlatsa da Tolga bildiğini okumaktadır.\n\nTolga'nın bu tutumu aşağıdakilerden hangisiyle ifade edilebilir?", secenekler: ["Üretken ve çözüm odaklı","Ön yargılı ve inatçı","Merhametli ve duyarlı","Araştırmacı ve meraklı"], dogru: 1, aciklama: "Sebzeleri denemeden reddetmesi ön yargılı, annesinin açıklamalarına rağmen değişmemesi inatçı olduğunu gösterir." },
+      { soru: "'Kış aylarında sık sık hastalanan Zeynep, bu yıl doktorunun tavsiyesiyle her sabah taze portakal suyu içmeye ve doğal beslenmeye başladı. Artık sabahları kendini daha enerjik hissediyor.'\n\nMetindeki 'bağışıklık' kelimesinin anlamı aşağıdakilerden hangisidir?", secenekler: ["Vücudun hastalıklara karşı gösterdiği direnç ve koruma sistemi","Soğuk havalarda kalın giyinme alışkanlığı","Geceleri erken uyuyarak zihni dinlendirme","Meyvelerin içindeki şeker oranı"], dogru: 0, aciklama: "Hastalanmamak ve dirençli olmak için bahsedilen 'bağışıklık', vücudun savunma gücüdür." },
+      { soru: "(I) Düzenli uyku, tıpkı iyi bir beslenme gibi vücudumuzun onarılması için temel bir ihtiyaçtır. (II) Uykusunu alamayan kişilerin dikkati daha çabuk dağılır. (III) Uzmanlar, çocukların günde en az dokuz saat uyuması gerektiğini söylüyor. (IV) Bütün gece bilgisayar oynayıp uykusuz kalan bir öğrencinin başarılı olması beklenemez.\n\nHangi cümle bir karşılaştırma içermektedir?", secenekler: ["I","II","III","IV"], dogru: 0, aciklama: "I. cümlede düzenli uyku, 'tıpkı ... gibi' ifadesiyle iyi bir beslenmeyle kıyaslanmıştır." },
+      { soru: "Anne: Sebze yemeğini neden yemedin?\nÇocuk: Tadını sevmiyorum.\nAnne: Unutma ki vücudumuz bir makine gibidir. Kaliteli yakıt koymazsan nasıl çalışıp sana enerji üretecek? Sebzeler vücudumuzun kaliteli yakıtıdır.\n\nAnne, çocuğunu ikna etmek için hangi yönteme başvurmuştur?", secenekler: ["Çocuğun sevdiği yiyecekleri yasaklayarak tehdit etme","İnsan vücudunu makineye benzeterek somutlaştırma","Sebzelerin çok pahalı olduğunu vurgulama","Uzmanların sayısal verilerini kanıtlama"], dogru: 1, aciklama: "Anne, vücut ve yakıt benzetmesiyle soyut bir konuyu somutlaştırarak anlatmıştır." },
+      { soru: "Mehmet dedesine sorar: 'Neden her sabah güneş doğarken kalkıp bahçede yürüyüş yapıyorsun?' Dedesi: 'Paslanan demir çürür yavrum, insan da hareketsizlikten çürür.' der.\n\nDedenin 'paslanan demir çürür' sözüyle asıl anlatmak istediği nedir?", secenekler: ["Bahçedeki demir çitlerin boyanması gerektiği","Uyumanın ömrü uzattığı","Hareketsiz kalan insan vücudunun sağlığını kaybedeceği","İnsanların yaşlandıkça daha çok dinlenmesi gerektiği"], dogru: 2, aciklama: "Kullanılmayan demirin paslanıp çürümesi gibi, hareket etmeyen vücut da sağlığını yitirir." },
+      { soru: "Ali kantinde meyve suyu ve kuruyemiş almış; arkadaşı Can ise asitli içecek ve cips almıştır. Birkaç ders sonra Can'ın karnı ağrımış, Ali ise teneffüste zinde koşmaya devam etmiştir.\n\nBu metinden hangi çıkarım yapılamaz?", secenekler: ["Gıda kalitesi kişinin enerjisini etkiler","Sağlıksız atıştırmalıklar sindirim sorunu yaratabilir","Can harçlığını Ali'den daha akıllıca kullanmıştır","Doğal gıdalar seçmek bedensel zindeliği korur"], dogru: 2, aciklama: "Sağlıklı ürün alan Ali akıllıca davranmış, Can ise rahatsızlanmıştır; C şıkkı tam tersi bir yargı içerir." },
+      { soru: "Öğretmen: 'Kış geldi. Havasız kapalı odalar ve el yıkamayı ihmal etmek bizi hastalıklara açık hale getirir. Pencereleri sık sık açmalı, ellerimizi en az yirmi saniye sabunla yıkamalıyız.'\n\nÖğretmenin asıl amacı nedir?", secenekler: ["Kış mevsiminin ne kadar uzun süreceğini haber vermek","Temizlik ve havalandırmanın sağlığı korumadaki rolünü kavratmak","Kaloriferlerin zararlı olduğunu ispatlamak","El yıkamak için ne kadar sabun gerektiğini hesaplamak"], dogru: 1, aciklama: "Öğretmen, hava ve hijyen sayesinde hastalıktan korunmanın önemini aktarmak istemektedir." },
+      { soru: "(1) Sağlıklı bir beden, insanın en değerli giysisidir. (2) Bu giysiyi korumanın yolu iyi beslenmek ve stresi yönetmektir. (3) Bazen bir doğa yürüyüşü, bir ağacın gölgesinde okunan kitap zihni tertemiz yapar. (4) Teknolojik cihazların yaydığı ışık uyku kalitemizi düşürmektedir.\n\nHangi cümle ruhsal sağlığı iyileştiren bir çözüm önerisi sunmaktadır?", secenekler: ["1","2","3","4"], dogru: 2, aciklama: "3. cümlede doğa yürüyüşü ve kitap okumanın zihni temizlediği; yani ruhsal sağlığı iyileştirdiği vurgulanmaktadır." }
+    ]
+  },
+  {
+    ad: "Sosyal Bilgiler", konu: "Bütçe", icon: "🌍", renk: "#10b981",
+    sorular: [
+      { soru: "Zeynep okul harçlıklarından her hafta 50 TL artırarak biriktirmektedir. Birkaç ay sonra biriken bu parayla ailesinden para istemeden istediği hikâye serisini almıştır.\n\nZeynep'in bu davranışı ekonomi kavramlarından hangisiyle doğrudan ilgilidir?", secenekler: ["Tüketim israfı","İhracat","Tasarruf","Gider fazlalığı"], dogru: 2, aciklama: "Harçlığının bir kısmını biriktirip hedefe ulaşmak tasarruf yapmaktır." },
+      { soru: "Market alışverişinde Ahmet Bey'in sepetinde ekmek, peynir, yumurta, zeytin ve son anda kasanın yanından aldığı pahalı bir çikolata vardır.\n\nSepetteki ürünlerden hangisi temel 'ihtiyaç' değil 'istek'tir?", secenekler: ["Ekmek","Pahalı çikolata","Yumurta","Peynir"], dogru: 1, aciklama: "Ekmek, yumurta ve peynir temel ihtiyaç; pahalı çikolata ise ertelenebilir istektir." },
+      { soru: "Bir ailenin aylık kazancı olan 30.000 TL, ailenin (….I….)'ni oluştururken; kira, mutfak alışverişi ve faturalar için ödenen paralar ailenin (….II….)'ni oluşturur.\n\nI ve II numaralı boşluklara sırasıyla hangi kavramlar gelmelidir?", secenekler: ["Gider / İstek","Gelir / Gider","Bütçe / Gelir","İhtiyaç / Bütçe"], dogru: 1, aciklama: "Aileye giren kazanç 'gelir', dışarıya ödenen kısımlar ise 'gider' olarak adlandırılır." },
+      { soru: "Kerem ve babası oyun konsolu beğenmiştir. Babası: 'Bunu hemen almak yerine önce bu ayki kira, fatura ve gıda ödemelerimizi hesaplayalım. Eğer para kalırsa alırız.' demiştir.\n\nBabanın bu yaklaşımının temel amacı nedir?", secenekler: ["Bütçede istekleri temel ihtiyaçların önüne koymak","Oyun konsollarının gereksiz olduğunu kanıtlamak","Giderlerin gelirleri aşmasını engellemek","Ürünün indirime girmesini beklemek"], dogru: 2, aciklama: "Baba, temel ihtiyaçları karşıladıktan sonra bütçe durumuna göre isteklere yer verir; bu, gelir-gider dengesini korumaktır." },
+      { soru: "Aslı Hanım bir ürünü beğendiğinde hemen almaz. Ürünü elinde tutup şunları düşünür: 'Bu şart mı? Almazsam eksikliğini hisseder miyim? Bütçemde buna yer var mı?'\n\nBu '10 saniye kuralı'nın temel faydası nedir?", secenekler: ["Ürünün fiyatının düşmesini sağlamak","İhtiyaç olmayan istekleri fark edip gereksiz harcamadan kaçınmak","Alışveriş süresini uzatmak","Ürünün son kullanma tarihini kontrol etmek"], dogru: 1, aciklama: "Kural, anlık hevesleri rasyonel bir süzgeçten geçirerek gereksiz harcamayı önler." },
+      { soru: "Bir evde gereksiz yere açık bırakılan odalar, damlatılan musluklar ve diş fırçalarken açık kalan su, ay sonu bütçeyi nasıl etkiler?", secenekler: ["Gelir miktarını artırır","Temel ihtiyaç giderlerini (faturaları) artırarak aile ekonomisine zarar verir","Tasarruf miktarını artırır","İhtiyaçlarla istekler arasındaki farkı ortadan kaldırır"], dogru: 1, aciklama: "İsraflı kullanım elektrik ve su faturalarını artırır; bu da zorunlu giderleri yükseltir." },
+      { soru: "Emre haftalık harçlığı olan 100 TL'yi alır almaz ilk gün hepsini oyun ve atıştırmalıklara harcar. Haftanın geri kalanında parasız kalıp okula yürümek zorunda kalır.\n\nBu sorunun temel sebebi aşağıdakilerden hangisidir?", secenekler: ["Harçlığını dengeli bir bütçeyle yönetememesi","Ailesinin harçlık vermeyi kesmesi","Okula gitmek için ulaşıma ihtiyaç duymaması","İhtiyaçlarını isteklerinin her zaman gerisinde bırakması"], dogru: 0, aciklama: "İlk günden tüm parayı harcayarak plan (bütçe) yapmamış; temel ihtiyacı olan ulaşıma pay ayıramamıştır." },
+      { soru: "Pazarda aynı geliri elde eden Erva ve Elif vardır. Erva indirimdeyken toplu alır ve az da olsa kenara para koyar. Elif ise her ihtiyacı bittiğinde pahalıya alır, hiç biriktirmez. Arabası bozulan Erva kenardaki parayla tamir ettirirken, evi su basan Elif borç bulmakta zorlanmıştır.\n\nBu senaryodan çıkarılabilecek en önemli ders nedir?", secenekler: ["Para kazanmak için pazarcılık yapılmalıdır","Gelirin yüksek olması zenginliğin tek şartıdır","Tasarruflu ve planlı bütçe, beklenmedik krizlere karşı korur","İhtiyaçlar hiçbir zaman toptan alınmamalıdır"], dogru: 2, aciklama: "Kazançlar eşit olsa da Erva'nın planlaması onu maddi krizden korumuştur." },
+      { soru: "Ayşe'nin ailesi akşam bir toplantı yaparak babanın ve annenin maaşını yazmış, sonra kira, fatura ve okul masraflarını düşmüştür. Kalan parayla tatil planı yapılıp yapılamayacağı tartışılmış; Ayşe'ye de söz hakkı verilmiştir.\n\nAyşe'ye söz hakkı verilmesinin en önemli faydası nedir?", secenekler: ["Ayşe'ye matematiğin zor olduğunu göstermek","Ayşe'nin ailenin tek söz sahibi olmasını sağlamak","Ayşe'ye finansal okuryazarlık ve ortak karar alma bilinci kazandırmak","Ailenin borçlarını Ayşe'ye yıkmak"], dogru: 2, aciklama: "Aile toplantısına çocukların katılması, harcama planı oluşturmayı ve tasarruf bilincini aşılar." },
+      { soru: "Atalarımız 'Ayağını yorganına göre uzat' ve 'İşten artmaz, dişten artar' diyerek ekonomiyle ilgili nasihatler vermiştir.\n\nBu iki atasözü bizi hangi davranışa yönlendirmektedir?", secenekler: ["Gelirimizden fazla harcamamaya ve tasarruf etmeye","Bütün kazancımızı kısa sürede isteklere harcamaya","Sadece çalışarak zengin olabileceğimize","Kıyafetlerimizin boyunu ayarlamaya"], dogru: 0, aciklama: "İlk söz giderlerin geliri aşmamasını, ikinci söz ise biriktirmenin önemini öğütler." }
+    ]
+  },
+  {
+    ad: "İngilizce", konu: "Passive Voices", icon: "🇬🇧", renk: "#8b5cf6",
+    sorular: [
+      { soru: 'John: "Your room looks very clean today!"\nMary: "Yes, it __________ by my mother every morning."\n\nWhich option completes the dialogue correctly?', secenekler: ["is cleaned","cleans","was cleaning","cleaned"], dogru: 0, aciklama: '"Every morning" indicates a regular present action; the correct present passive is "is cleaned".' },
+      { soru: 'Teacher: "Do you know who built this historical bridge?"\nStudent: "Yes, this bridge __________ by a famous architect in the 15th century."\n\nChoose the correct option.', secenekler: ["is built","was built","builds","is building"], dogru: 1, aciklama: '"In the 15th century" is a past time marker; past simple passive "was built" is required.' },
+      { soru: 'Tourist: "Where can I find the new shopping mall?"\nGuide: "It isn\'t ready yet. A new shopping mall __________ in our city right now."\n\nWhich verb form is correct?', secenekler: ["was built","built","is building","is being built"], dogru: 3, aciklama: '"Right now" + passive = present continuous passive "is being built".' },
+      { soru: 'Mother: "Where are the cookies? I left them on the table."\nSon: "Sorry Mom. The cookies __________ by the dog a few minutes ago."\n\nChoose the correct passive verb.', secenekler: ["ate","are eaten","were eaten","will eat"], dogru: 2, aciklama: '"A few minutes ago" is past, plural subject "cookies" → "were eaten".' },
+      { soru: 'Principal: "How do the students know about the new rules?"\nTeacher: "The students __________ advice and rules in the counsellor\'s office every week."\n\nWhich option is correct?', secenekler: ["gives","are given","are giving","gave"], dogru: 1, aciklama: 'Students receive advice regularly; present simple passive "are given" is needed.' },
+      { soru: 'Active: The teachers organise the sports events at our school.\n\nChoose the correct passive form:', secenekler: ["are organised by the teachers","were organised by the teachers","organised by the teachers","is organised by the teachers"], dogru: 0, aciklama: 'Plural subject + present simple → "are organised by the teachers".' },
+      { soru: 'A library sign says: "Silence __________ kept in the reading rooms."\n\nWhich verb completes the passive rule?', secenekler: ["must be","must","are","was"], dogru: 0, aciklama: 'Modal passive = modal + be + past participle → "must be kept".' },
+      { soru: 'Sarah: "I love these beautiful pictures."\nTom: "Yes, these pictures __________ by a local artist last year."\n\nWhich option is correct?', secenekler: ["paint","are painted","were painted","was painted"], dogru: 2, aciklama: 'Plural "pictures" + past marker "last year" → "were painted".' },
+      { soru: 'Journalist: "How many languages __________ in this international school?"\nDirector: "Students learn English, French, and Spanish here."\n\nChoose the correct passive question form.', secenekler: ["are spoken","is speaking","speaks","was spoken"], dogru: 0, aciklama: 'General present fact + plural subject "languages" → "are spoken".' },
+      { soru: 'Find the mistake:\nA: "Who discovered America?"\nB: "America is discovered by Christopher Columbus in 1492."\n\nWhy is the bold part incorrect?', secenekler: ['Columbus is still alive today.','Present tense "is discovered" is wrong; the event happened in the past. It should be "was discovered".','America discovered Christopher Columbus.','It is not a passive verb.'], dogru: 1, aciklama: '1492 is in the past; correct form is past passive "was discovered", not present "is discovered".' }
+    ]
+  },
+  {
+    ad: "Din Kültürü", konu: "Kıssalar", icon: "☪️", renk: "#ef4444",
+    sorular: [
+      { soru: "Hz. Nuh (as.), kavmini tevhide çağırmış; yıllarca süren çabalarına rağmen çok az kişi inanmıştır. İnsanlar onunla alay etse de Allah'ın emriyle devasa bir gemi inşa etmekten vazgeçmemiştir.\n\nBu davranışından çıkarabileceğimiz en önemli ahlaki ders nedir?", secenekler: ["Sadece kendi ailemizin dediklerini dinlemeliyiz","İnsanlar alaya alsa bile inandığımız doğru yolda azim, kararlılık ve sabırla ilerlemelyiz","Gemi yapımı çok kârlı bir meslektir","Her zaman kalabalık grupların düşüncesine uymalıyız"], dogru: 1, aciklama: "Hz. Nuh kıssasında en çok vurgulanan özellik, zorluklar karşısında gösterilen sabır ve kararlılıktır." },
+      { soru: "Hz. İbrahim (as.), babası ve kavmi cansız putlara taparken onların inançlarını eleştirmiştir. Atalarının yaptığını körü körüne yapmak yerine aklını kullanarak gerçek yaratıcıyı bulmuştur.\n\nBu kıssada verilmek istenen asıl mesaj nedir?", secenekler: ["Sadece büyüklerin söyledikleri doğrudur","Eski heykelleri müzelerde sergilememeliyiz","İnançlarımızı aklımızı kullanarak ve düşünerek bulmalıyız","Yalnızca kendi yaşımızdaki insanları dinlemeliyiz"], dogru: 2, aciklama: "Hz. İbrahim, toplumun yanlış âdetlerini sorgulayarak körü körüne taklidi reddetmiştir." },
+      { soru: "Hz. Musa (as.), kendisini ilah ilan eden Firavun'a karşı cesaretle dikilmiş ve halkını kölelikten kurtarmak için mücadele etmiştir. Bu zorlu görevden hiçbir zaman kaçmamıştır.\n\nBu kıssa günlük hayatta hangi duruma örnektir?", secenekler: ["Haksızlıklar karşısında sessiz kalmayıp adaleti savunmaya","Kendi çıkarlarımız için güçlülerin yanında yer almaya","Güçlü liderlerin her zaman haklı olduğunu kabullenmeye","Sorumluluklardan kaçarak rahatımızı düşünmeye"], dogru: 0, aciklama: "Hz. Musa'nın zalim Firavun'a karşı dik duruşu, haksızlığa boyun eğmemeyi öğretir." },
+      { soru: "Arkadaşları tarafından haksızlığa uğrayan ve dışlanan Veli, kimseye kötü söz söylememiş, sabretmiş ve sonunda öğretmeni tarafından haklı bulunmuştur.\n\nVeli'nin bu sabrı, Kur'an'da anlatılan ülülazm peygamberlerin hangi ortak özelliğidir?", secenekler: ["Kendilerine yapılan zulme karşı hemen pes etmeleri","İnkârcıların kötülüklerine karşı sabır ve kararlılık göstermeleri","İnsanlardan intikam almak için fırsat kollamaları","Haksızlığı gördüklerinde sadece susmaları"], dogru: 1, aciklama: "Kıssalarda övülen peygamberlerin ortak özelliği, zorluklar karşısında pes etmeyip sabırla doğruyu savunmalarıdır." },
+      { soru: "Hz. Nuh'un gemisi kurtulurken oğlu 'Beni sulara karşı koruyacak bir dağa sığınacağım.' diyerek gemiye binmemiş ve boğulmuştur. Peygamber çocuğu olmak onu bu sondan kurtaramamıştır.\n\nBu üzücü olaydan çıkarılması gereken en önemli ders nedir?", secenekler: ["Dağlara tırmanmak deniz yolculuğundan tehlikelidir","Bireysel inanç ve eylemlerin sorumluluğu kişinin kendisine ait; kimse başkasının yerine kurtulamaz","Gemi yolculuğu her zaman daha güvenlidir","Ailedeki herkes mutlaka aynı fikirde olur"], dogru: 1, aciklama: "Hz. Nuh'un oğlunun akıbeti, bireysel sorumluluğun esas olduğunu gösterir." },
+      { soru: "Kur'an-ı Kerim'deki kıssalar sadece eski zamanlara ait masallar değildir. Allah bu kıssaları insanların geçmişten ibret alması için anlatmıştır.\n\nBir Müslüman kıssaları okurken nasıl bir tutum sergilemelidir?", secenekler: ["Sadece olayların hangi şehirlerde geçtiğini ezberlemek","Olayları ilginç masallar gibi dinleyip eğlenmek","İyi karakterleri örnek almak ve kötü karakterlerin hatalarından uzak durmak","Sadece peygamberlerin isimlerini ezberlemek"], dogru: 2, aciklama: "Kıssaların asıl amacı (kıssadan hisse almak), geçmişteki erdemleri günümüze taşımaktır." },
+      { soru: "Hz. İbrahim (as.) putları kırıp tevhide ulaştığında Nemrut onu büyük bir ateşe attırmak istemiştir. Ancak Hz. İbrahim ateşin karşısında bile inancından vazgeçmemiş, Allah'a güvenmiştir.\n\nBu kıssadaki olay insanın hangi manevi özelliğini vurgular?", secenekler: ["Ateşin odunla yakıldığını","Bilimsel çalışmaların önemini","Allah'a duyulan eşsiz güveni (tevekkül) ve inanç uğrundaki cesareti","Nemrut'un aslında merhametli olduğunu"], dogru: 2, aciklama: "Ateşe atılacağını bile bile doğrulardan dönmemek, Allah'a tam teslimiyeti (tevekkülü) simgeler." },
+      { soru: "Hz. İsa (as.), kendisine inanmayan ve tuzak kuranların tehditlerine rağmen görevini sürdürmüş, hastaları iyileştirmiş ve insanlara şefkatle yaklaşmıştır.\n\nBu kıssa, bize kötü davrananlar karşısında nasıl bir tutum öğretmektedir?", secenekler: ["Kötü davrananlarla kavga etmeliyiz","Haksızlığa karşı çıkarken kin yerine şefkat, sabır ve affedicilikle davranmalıyız","Okuldan kaçıp kimseyle konuşmamalıyız","Sadece bize iyi davrananlar için iyilik yapmalıyız"], dogru: 1, aciklama: "Hz. İsa'nın düşmanlarına bile şefkatle yaklaşması, kötülüğe iyilikle karşılık verme ahlakını öğretir." },
+      { soru: "Meryem: 'Hz. Musa kıssasını okuduğumda, gücüne güvenen Firavun'un yenildiğini ve zalimlerin asla kazanamayacağını anladım.'\n\nMeryem'in bu çıkarımı Kur'an'ın hangi temel amacıyla uyuşmaktadır?", secenekler: ["Kıssalar aracılığıyla zalimlerin cezalandırılacağı uyarısını yaparak insanları kötülükten alıkoymak","Firavunların nasıl saraylar yaptığını öğretmek","İnsanlara Mısır coğrafyasını tanıtmak","Kıssaları eğlenceli birer macera olarak sunmak"], dogru: 0, aciklama: "Kıssaların temel hedeflerinden biri, zalimlerin sonunu göstererek adaletsizlikten alıkoymaktır." },
+      { soru: "Peygamberler de bizim gibi yorulur, üzülür ve haksızlığa maruz kalırlardı. Ancak hiçbir zaman adaletten sapmadılar.\n\nKıssalarda onların insani yönlerinin ve büyük mücadelelerinin anlatılmasının sebebi nedir?", secenekler: ["İnsanüstü, uçabilen varlıklar olduklarını göstermek için","Bizim de kendi hayatımızda onlar gibi sabırla mücadele edebileceğimize dair bize moral ve örnek olmak için","Tarih derslerinde daha fazla konu işlenmesini sağlamak için","Dünyada artık hiçbir zorluk kalmadığını ispatlamak için"], dogru: 1, aciklama: "Peygamberlerin insani zorluklar çekmesi, onları 'ulaşılabilir ve takip edilebilir birer rol model' yapar." }
+    ]
+  }
+];
+
+let cevaplar = {};
+let kilitli = {};
+
+function harf(i) { return ['A','B','C','D'][i]; }
+
+function render() {
+  const alan = document.getElementById('testAlani');
+  let html = '';
+  dersler.forEach((ders, di) => {
+    html += `<div class="ders-baslik">
+      <div class="icon" style="background:${ders.renk}22">${ders.icon}</div>
+      <div>
+        <h2 style="color:${ders.renk}">${ders.ad}</h2>
+        <span>${ders.konu}</span>
+      </div>
+    </div>`;
+    ders.sorular.forEach((s, si) => {
+      const key = `${di}_${si}`;
+      html += `<div class="soru-kart" id="kart_${key}">
+        <div class="soru-no">${ders.ad} — Soru ${si+1}</div>
+        <div class="soru-metin">${s.soru}</div>
+        <div class="secenekler">`;
+      s.secenekler.forEach((sec, oi) => {
+        html += `<button class="secenek" id="sec_${key}_${oi}" onclick="sec('${key}',${oi},${s.dogru},'${s.aciklama.replace(/'/g,"\\'")}')">
+          <span class="harf">${harf(oi)}</span><span>${sec}</span>
+        </button>`;
+      });
+      html += `</div>
+        <div class="aciklama" id="ac_${key}"></div>
+      </div>`;
+    });
+  });
+  alan.innerHTML = html;
+}
+
+function sec(key, oi, dogru, aciklama) {
+  if (kilitli[key]) return;
+  kilitli[key] = true;
+  cevaplar[key] = oi;
+
+  const kart = document.getElementById('kart_'+key);
+  const acEl = document.getElementById('ac_'+key);
+
+  [0,1,2,3].forEach(i => {
+    const btn = document.getElementById('sec_'+key+'_'+i);
+    if (!btn) return;
+    btn.disabled = true;
+    if (i === dogru) btn.classList.add('dogru-cevap');
+    else if (i === oi && oi !== dogru) btn.classList.add('yanlis-cevap');
+  });
+
+  if (oi === dogru) {
+    kart.classList.add('dogru');
+    acEl.innerHTML = '✅ Doğru! ' + aciklama;
+  } else {
+    kart.classList.add('yanlis');
+    acEl.innerHTML = '❌ Yanlış. Doğru cevap: <strong>' + harf(dogru) + '</strong>. ' + aciklama;
+  }
+  acEl.classList.add('gorunu');
+  guncelle();
+}
+
+function guncelle() {
+  const toplam = dersler.reduce((a,d) => a + d.sorular.length, 0);
+  const cevaplanan = Object.keys(kilitli).length;
+  document.getElementById('progressBar').style.width = (cevaplanan/toplam*100)+'%';
+
+  const btn = document.getElementById('sonucBtn');
+  if (cevaplanan === toplam) btn.disabled = false;
+}
+
+function sonucGoster() {
+  let toplamD = 0, toplamY = 0;
+  const dersOzetler = dersler.map((ders, di) => {
+    let d = 0, y = 0;
+    ders.sorular.forEach((s, si) => {
+      const key = `${di}_${si}`;
+      if (cevaplar[key] === s.dogru) d++;
+      else y++;
+    });
+    toplamD += d;
+    toplamY += y;
+    return { ad: ders.ad, icon: ders.icon, dogru: d, yanlis: y, toplam: ders.sorular.length, renk: ders.renk };
+  });
+
+  const toplam = dersler.reduce((a,d) => a + d.sorular.length, 0);
+  const yuzde = Math.round(toplamD / toplam * 100);
+  let mesaj = yuzde >= 85 ? '🏆 Harika! Muhteşem bir performans sergiliyorsun!' : yuzde >= 70 ? '👏 Çok iyi! Az daha ve mükemmel olacak!' : yuzde >= 50 ? '💪 Güzel! Biraz daha çalışırsan daha da iyi olacaksın.' : '📚 Üzülme! Çalışmaya devam et, başarı gelecek!';
+
+  let ozetHTML = '';
+  dersOzetler.forEach(d => {
+    const puan = Math.round(d.dogru / d.toplam * 100);
+    ozetHTML += `<div class="ders-ozet-kart">
+      <div class="ders-adi">${d.icon} ${d.ad}</div>
+      <div class="d-y">
+        <span style="color:#22c55e;font-weight:700">✓ ${d.dogru}</span>
+        <span style="color:#ef4444;font-weight:700">✗ ${d.yanlis}</span>
+      </div>
+      <div class="d-puan" style="color:${d.renk}">%${puan}</div>
+    </div>`;
+  });
+
+  const panel = document.getElementById('sonucPanel');
+  panel.innerHTML = `
+    <h2>Test Tamamlandı!</h2>
+    <div class="puan">${toplamD} / ${toplam}</div>
+    <div class="mesaj">${mesaj}<br><br>Başarı Oranı: <strong>%${yuzde}</strong> &nbsp;|&nbsp; Doğru: <strong>${toplamD}</strong> &nbsp;|&nbsp; Yanlış: <strong>${toplamY}</strong></div>
+    <div class="ders-ozet">${ozetHTML}</div>
+    <button class="tekrar-btn" onclick="location.reload()">🔄 Testi Tekrarla</button>
+  `;
+  panel.style.display = 'block';
+  panel.scrollIntoView({ behavior: 'smooth' });
+}
+
+render();
+guncelle();
+document.getElementById('sonucBtn').disabled = true;
+</script>
+
+<div class="container">
+  <div class="buton-alan">
+    <div class="bos-uyari" id="bosUyari">⚠️ Lütfen tüm soruları cevaplayın.</div>
+    <button id="sonucBtn" onclick="sonucGoster()">📊 Sonuçları Gör</button>
+  </div>
+  <div id="sonucPanel"></div>
+</div>
+
+</body>
+</html>
