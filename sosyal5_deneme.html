@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sosyal Bilgiler 5 - 2. Dönem 2. Ortak Yazılı Denemesi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap');
+
+  :root{
+    --bg:#e9eef2;
+    --paper:#f6fafc;
+    --ink:#1a2b33;
+    --ink-soft:#4a606b;
+    --line:#d2e0e6;
+    --brand:#0e7490;
+    --brand-soft:#cef0f7;
+    --green:#15803d;
+    --green-soft:#dcfce7;
+    --red:#b91c1c;
+    --red-soft:#fee2e2;
+    --gold:#0891b2;
+    --shadow:0 18px 40px -22px rgba(15,60,75,.45);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Nunito',system-ui,sans-serif;
+    background:
+      radial-gradient(circle at 12% 15%, #e3edf2 0%, transparent 45%),
+      radial-gradient(circle at 88% 85%, #d9e9ef 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    padding:24px 16px 60px;
+    line-height:1.55;
+  }
+  .wrap{max-width:760px;margin:0 auto}
+
+  header.sheet{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:20px 20px 0 0;
+    padding:26px 30px 22px;
+    box-shadow:var(--shadow);
+    border-bottom:none;
+    position:relative;
+    overflow:hidden;
+  }
+  header.sheet::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:6px;
+    background:linear-gradient(90deg,var(--brand),#22a3c0,var(--gold));
+  }
+  .badge{
+    display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--brand);
+    background:var(--brand-soft);padding:5px 12px;border-radius:999px;margin-bottom:12px;
+  }
+  header.sheet h1{
+    font-family:'Fraunces',serif;font-weight:700;font-size:1.7rem;line-height:1.15;
+    color:var(--ink);letter-spacing:-.01em;
+  }
+  header.sheet .sub{color:var(--ink-soft);font-size:.95rem;margin-top:6px;font-weight:600}
+
+  .progress-bar{margin-top:20px;height:9px;background:#dde8ec;border-radius:999px;overflow:hidden}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--brand),#3fb3ce);
+    border-radius:999px;transition:width .35s cubic-bezier(.4,0,.2,1)}
+
+  .dots{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+  .dot{
+    width:26px;height:26px;border-radius:8px;border:1.5px solid var(--line);
+    background:#fff;color:var(--ink-soft);font-size:.74rem;font-weight:800;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:all .18s;user-select:none;
+  }
+  .dot:hover{border-color:var(--brand);transform:translateY(-2px)}
+  .dot.answered{background:var(--brand-soft);border-color:#9bd9e6;color:var(--brand)}
+  .dot.current{background:var(--brand);border-color:var(--brand);color:#fff;
+    box-shadow:0 4px 12px -3px rgba(14,116,144,.55)}
+
+  main.card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-top:1px dashed var(--line);
+    border-radius:0 0 20px 20px;
+    padding:30px;
+    box-shadow:var(--shadow);
+    min-height:380px;
+    display:flex;flex-direction:column;
+  }
+  .q-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+  .q-num{font-family:'Fraunces',serif;font-size:2rem;font-weight:700;color:var(--brand);line-height:1}
+  .q-of{font-size:.85rem;color:var(--ink-soft);font-weight:700}
+  .q-text{font-size:1.12rem;font-weight:600;color:var(--ink);margin:10px 0 22px;line-height:1.6}
+
+  .options{display:flex;flex-direction:column;gap:11px;flex:1}
+  .opt{
+    display:flex;align-items:flex-start;gap:13px;
+    background:#fff;border:1.5px solid var(--line);border-radius:14px;
+    padding:14px 16px;cursor:pointer;transition:all .16s;text-align:left;font:inherit;
+    color:var(--ink);width:100%;
+  }
+  .opt:hover:not(.locked){border-color:var(--brand);background:#fbfeff;transform:translateX(3px)}
+  .opt .key{
+    flex-shrink:0;width:30px;height:30px;border-radius:9px;background:var(--brand-soft);
+    color:var(--brand);font-weight:800;display:flex;align-items:center;justify-content:center;
+    font-size:.95rem;transition:all .16s;
+  }
+  .opt .txt{font-size:1rem;font-weight:600;padding-top:3px}
+  .opt.selected{border-color:var(--brand);background:var(--brand-soft)}
+  .opt.selected .key{background:var(--brand);color:#fff}
+  .opt.correct{border-color:var(--green);background:var(--green-soft)}
+  .opt.correct .key{background:var(--green);color:#fff}
+  .opt.wrong{border-color:var(--red);background:var(--red-soft)}
+  .opt.wrong .key{background:var(--red);color:#fff}
+  .opt.locked{cursor:default}
+
+  .explain{
+    margin-top:18px;padding:14px 16px;border-radius:12px;
+    background:#eef7fb;border:1px solid #c9e6f1;font-size:.95rem;color:#0c3a4a;
+    display:none;line-height:1.55;
+  }
+  .explain.show{display:block;animation:fade .3s ease}
+  .explain b{color:var(--brand)}
+  @keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+  .btn{
+    font:inherit;font-weight:800;font-size:1rem;border:none;border-radius:13px;
+    padding:13px 24px;cursor:pointer;transition:all .16s;display:flex;align-items:center;gap:8px;
+  }
+  .btn-prev{background:#fff;border:1.5px solid var(--line);color:var(--ink-soft)}
+  .btn-prev:hover:not(:disabled){border-color:var(--ink-soft);color:var(--ink)}
+  .btn-prev:disabled{opacity:.4;cursor:not-allowed}
+  .btn-next{background:var(--brand);color:#fff;margin-left:auto;
+    box-shadow:0 8px 18px -8px rgba(14,116,144,.7)}
+  .btn-next:hover{background:#0b6178;transform:translateY(-1px)}
+
+  .result{display:none;text-align:center;padding:20px 10px;flex-direction:column;align-items:center}
+  .result.show{display:flex;animation:fade .4s ease}
+  .result .emoji{font-size:3.4rem;margin-bottom:8px}
+  .result h2{font-family:'Fraunces',serif;font-size:1.7rem;color:var(--ink);margin-bottom:6px}
+  .score-ring{
+    --p:0; width:150px;height:150px;border-radius:50%;margin:18px auto;
+    background:conic-gradient(var(--brand) calc(var(--p)*1%), #dde8ec 0);
+    display:flex;align-items:center;justify-content:center;position:relative;
+  }
+  .score-ring::after{content:"";position:absolute;inset:14px;background:var(--paper);border-radius:50%}
+  .score-ring .inner{position:relative;z-index:1;text-align:center}
+  .score-ring .big{font-family:'Fraunces',serif;font-size:2.2rem;font-weight:700;color:var(--brand);line-height:1}
+  .score-ring .small{font-size:.8rem;color:var(--ink-soft);font-weight:700}
+  .result .line{color:var(--ink-soft);font-size:1.05rem;font-weight:600;margin-top:4px}
+  .result-stats{display:flex;gap:14px;margin:20px 0 4px;flex-wrap:wrap;justify-content:center}
+  .stat{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px 22px;min-width:90px}
+  .stat .n{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700}
+  .stat .l{font-size:.78rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em}
+  .stat.ok .n{color:var(--green)} .stat.no .n{color:var(--red)} .stat.empty .n{color:var(--ink-soft)}
+  .btn-restart{background:var(--brand);color:#fff;margin-top:24px;
+    box-shadow:0 8px 18px -8px rgba(14,116,144,.7)}
+  .btn-restart:hover{background:#0b6178;transform:translateY(-1px)}
+  .btn-review{background:#fff;border:1.5px solid var(--line);color:var(--ink-soft);margin-top:12px}
+  .btn-review:hover{border-color:var(--brand);color:var(--brand)}
+
+  .signature{
+    position:fixed;right:18px;bottom:14px;width:62px;opacity:.5;
+    pointer-events:none;z-index:50;filter:saturate(.9);transition:opacity .3s;
+  }
+  .signature:hover{opacity:.8}
+
+  footer.note{text-align:center;color:var(--ink-soft);font-size:.82rem;margin-top:22px;font-weight:600;opacity:.7}
+
+  @media(max-width:560px){
+    body{padding:16px 10px 70px}
+    header.sheet,main.card{padding:22px 18px}
+    header.sheet h1{font-size:1.4rem}
+    .q-text{font-size:1.05rem}
+    .signature{width:50px;right:10px;bottom:10px}
+    .btn{padding:12px 18px;font-size:.95rem}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="sheet">
+    <span class="badge">2. Dönem · 2. Ortak Yazılı</span>
+    <h1>Sosyal Bilgiler 5 — Deneme Sınavı</h1>
+    <div class="sub">Senaryo 1 · 20 Soru · Çoktan Seçmeli</div>
+    <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+    <div class="dots" id="dots"></div>
+  </header>
+
+  <main class="card">
+    <div id="quiz">
+      <div class="q-head">
+        <span class="q-num" id="qnum">1</span>
+        <span class="q-of" id="qof">/ 20. soru</span>
+      </div>
+      <div class="q-text" id="qtext"></div>
+      <div class="options" id="opts"></div>
+      <div class="explain" id="explain"></div>
+      <div class="nav">
+        <button class="btn btn-prev" id="prev">&larr; Önceki</button>
+        <button class="btn btn-next" id="next">Sonraki &rarr;</button>
+      </div>
+    </div>
+
+    <div class="result" id="result">
+      <div class="emoji" id="remoji">🎉</div>
+      <h2 id="rtitle">Test Tamamlandı!</h2>
+      <div class="score-ring" id="ring"><div class="inner">
+        <div class="big" id="rpct">0%</div><div class="small">başarı</div>
+      </div></div>
+      <div class="line" id="rline"></div>
+      <div class="result-stats">
+        <div class="stat ok"><div class="n" id="sok">0</div><div class="l">Doğru</div></div>
+        <div class="stat no"><div class="n" id="sno">0</div><div class="l">Yanlış</div></div>
+        <div class="stat empty"><div class="n" id="sempty">0</div><div class="l">Boş</div></div>
+      </div>
+      <button class="btn btn-review" id="review">Cevapları İncele</button>
+      <button class="btn btn-restart" id="restart">Testi Yeniden Başlat</button>
+    </div>
+  </main>
+
+  <footer class="note">Cevaplarını işaretledikten sonra açıklamayı görebilir, istediğin soruya geri dönebilirsin.</footer>
+</div>
+
+<img class="signature" src="data:image/png;base64,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" alt="imza">
+
+<script>
+const QUESTIONS = [{"q": "Sosyal bilgiler öğretmeni, öğrencilerinden \"etkin vatandaşların özelliklerine\" örnekler vermelerini istemiştir. Aşağıdaki öğrencilerden hangisinin verdiği örnek etkin bir vatandaşa ait olamaz?", "o": ["Zeynep: Alışverişlerimden sonra mutlaka fiş veya fatura alırım.", "Burak: Satın aldığım ürünün son kullanma tarihi geçmişse durumu görmezden gelirim.", "Cem: Çevremdeki tarihî eserlerin ve doğal varlıkların korunmasına destek olurum.", "Derya: Ailemde kararlar alınırken düşüncelerimi özgürce ifade ederim."], "a": 1, "e": "Satın alınan bir ürünün hatalı ya da son kullanma tarihinin geçmiş olması durumunda hakkını aramak etkin bir vatandaşın görevidir; görmezden gelmek yanlış bir davranıştır."}, {"q": "Kerem, bisiklet kullanmayı çok iyi bildiği için kask takmak istememektedir. Çağan ise kask takmadan bisiklet kullanmamakta ve bisiklet yolunu kullanmaya özen göstermektedir. Çağan'ın bu davranışı toplum düzenine nasıl bir katkı sağlar?", "o": ["Sadece kendi bisikletinin eskimesini önler.", "Trafik kurallarına ve güvenlik önlemlerine uyarak hem kendi sağlığını hem de toplumun güvenliğini korur.", "Diğer çocukların o yolda bisiklet kullanmasını engeller.", "Çevresindekilere korku vererek bisiklet yollarını boşaltır."], "a": 1, "e": "Kurallara uymak, kask takmak ve bisiklet yolunu kullanmak bireysel bir önlem olmasının yanında toplumsal trafik düzeni ve huzuruna doğrudan katkı sağlar."}, {"q": "Kocaeli'deki bir ortaokulda öğrenciler, sosyal sorumluluk çalışmaları yaparak huzurevi ziyareti ve görme engelliler için kitap seslendirme gibi etkinlikler yapmaktadırlar. Öğrencilerin bu faaliyetlere katılması, etkin vatandaşlık açısından aşağıdakilerden hangisini gösterir?", "o": ["Sadece kendi menfaatlerini düşündüklerini", "Çevresindeki sorunları fark edip toplumsal dayanışmaya ve yardımlaşmaya katkı sağladıklarını", "Okuldan kaçmak için farklı bahaneler aradıklarını", "Boş zamanlarını her zaman teknolojik aletlerle geçirmeyi tercih ettiklerini"], "a": 1, "e": "Gönüllü olarak huzurevi ziyareti ve engellilere destek faaliyetleri yapmak, sorunlara duyarlı etkin vatandaş davranışlarıdır ve toplumsal dayanışmayı güçlendirir."}, {"q": "Samsun'da jandarma ekipleri çocuklara uygulamalı trafik güvenliği eğitimi vermiş; güvenli takip mesafesi, emniyet kemerinin önemi ve trafik ışıklarında nasıl davranılması gerektiğini anlatmıştır. Bu eğitimin toplum düzeni bakımından asıl hedefi aşağıdakilerden hangisidir?", "o": ["Mahalledeki araç sayısını azaltarak yolları tamamen yayalara bırakmak", "Çocukların sadece sürücü belgesi almak için sınava hazırlanmasını sağlamak", "Trafik kurallarını bilen, uymayanları uyaran ve yayalara saygılı etkin vatandaşlar yetiştirmek", "Toplu taşıma kullanımını ülke genelinde tamamen yasaklamak"], "a": 2, "e": "Güvenlik ve trafik eğitimlerinin temel amacı, sadece cezadan kaçan değil, kurallara bilinçli uyan ve karşısındakine saygı duyan etkin vatandaşlar yetiştirmektir."}, {"q": "Yarın çok önemli bir sınavı olan Ayşe, odasında ders çalışmaktadır. Ancak üst kattan gelen yüksek müzik sesi, derse odaklanmasını olumsuz etkilemektedir. Üst komşusunun Ayşe'nin uyarısına \"Ben kendi evimde istediğimi yaparım\" diyerek karşılık vermesi, temel hak ve özgürlükler açısından neden yanlıştır?", "o": ["Müzik dinlemenin sadece gündüz saatlerinde yapılabilecek bir etkinlik olduğunu bilmemesi", "Kendi özgürlüğünü kullanırken başkalarının hakkına saygı göstermemesi ve başkalarının özgürlüğünü kısıtlaması", "Çaldığı müzik türünün Ayşe'nin hoşuna gidecek türden bir müzik olmaması", "Sınav dönemlerinde tüm binalarda müzik dinleme yasağı uygulandığını bilmemesi"], "a": 1, "e": "Özgürlükler sınırsız değildir; bir kişinin özgürlüğü başkasının hakkının başladığı yerde biter. Kendi evinde bile olsa kimse başkasına rahatsızlık veremez."}, {"q": "Anayasa ve uluslararası sözleşmelere göre, çocukların ekonomik sömürüye ve eğitimine zarar verecek, bedensel veya zihinsel gelişimini engelleyecek işlerde çalıştırılması yasaktır. Ancak 13 yaşındaki Ali, ailesi tarafından okula gönderilmeyip ağır şartlarda sanayide çalıştırılmaktadır. Ali'nin yaşadığı bu durum, devletin güvence altına aldığı en temel haklardan hangilerinin ihlal edildiğini gösterir?", "o": ["Seçme ve seçilme hakkı", "Yerleşme ve seyahat özgürlüğü", "Özel hayatın gizliliği hakkı", "Eğitim hakkı ve korunma hakkı"], "a": 3, "e": "Çocukların bedensel ve zihinsel gelişimini engelleyecek işlerde çalıştırılması, onların en temel haklarından olan eğitim ve korunma hakkının doğrudan ihlalidir."}, {"q": "Herkesin devlet sınırları içerisinde yerleşme ve seyahat etme hürriyeti vardır. Ancak koronavirüs salgını döneminde, salgının daha fazla yayılarak vatandaşların hayatını tehdit etmesini engellemek amacıyla bazı köy ve mahalleler geçici süreyle karantinaya alınmıştır. Bu durumdan yola çıkarak aşağıdaki çıkarımlardan hangisi yapılabilir?", "o": ["Seyahat hakkı hiçbir durumda, hiçbir gerekçeyle kısıtlanamaz.", "Toplum sağlığını ve yaşama hakkını korumak gibi olağanüstü durumlarda temel hak ve özgürlükler yasalarla sınırlandırılabilir.", "Salgın hastalıklarda sadece hastalık taşıyanların değil, doktorların da seyahat etmesi yasaktır.", "Karantina uygulaması vatandaşların eğitim ve düşünceyi ifade etme hakkını elinden almaktır."], "a": 1, "e": "Temel haklar anayasa ile korunsa da, bulaşıcı salgın hastalıklar gibi halk sağlığını doğrudan tehdit eden olağanüstü durumlarda devlet tarafından geçici olarak kısıtlanabilir."}, {"q": "Temel insan hak ve özgürlükleri, yasalarla güvence altına alınmıştır ve bu hakların korunmasında en etkili güç devlettir. Devletin temel hakları yasalar ve anayasa ile koruma altına almasının en önemli sebebi aşağıdakilerden hangisidir?", "o": ["Bireylerin toplum içinde kendini daha güvende hissetmesini ve adil bir düzende yaşamasını sağlamak", "Bireylerin istedikleri zaman başkalarına zarar verebilmesine hukuki bir ortam hazırlamak", "Mahkemelerin ve avukatların iş yükünü artırmak", "Toplumda sadece belirli bir grubun ayrıcalıklı ve üstün olmasını sağlamak"], "a": 0, "e": "Devletin insan haklarını kanun güvencesine almasının ana nedeni, adaleti sağlamak ve bireylerin korkusuzca, özgür, güvenli bir şekilde yaşayabileceği toplum düzenini inşa etmektir."}, {"q": "Mersin'de bir mahalle muhtarı, her sabah mahallesindeki sokakları bisikletiyle dolaşarak çöp toplama sorunlarını, yanan veya eksik sokak lambalarını ve asfalt çukurları gibi sorunları not alıp ilgili kurumlara iletmektedir. Muhtarın tespit ettiği çöp toplama, altyapı ve yol onarımı gibi mahalli sorunların çözümü için öncelikle aşağıdaki kurumlardan hangisinin görev alması gerekir?", "o": ["Sağlık Bakanlığı", "Kaymakamlık", "Belediye", "Tüketici Hakem Heyeti"], "a": 2, "e": "Sokak lambaları, asfalt yaması, çöplerin toplanması ve kanalizasyon gibi yerel altyapı hizmetlerini yerine getiren temel kurum Belediyedir."}, {"q": "İbrahim Bey, bir alışveriş sitesinden aldığı elektrikli süpürgenin bozuk çıkması üzerine satıcı firma ile iletişime geçmiş ancak ürünün değişimi firma tarafından haksız yere reddedilmiştir. Bilinçli bir tüketici olan İbrahim Bey, mağduriyetinin giderilmesi ve ödediği paranın iade edilmesi için hangi kuruma başvurmalıdır?", "o": ["Tüketici Hakem Heyeti", "Emniyet Müdürlüğü", "TEMA Vakfı", "Nüfus Müdürlüğü"], "a": 0, "e": "Alışverişlerde hatalı/kusurlu (ayıplı) ürün satan ve iadeyi kabul etmeyen firmalara karşı vatandaşların başvurması gereken en birincil kurum Tüketici Hakem Heyetidir."}, {"q": "Vatandaşların devletle iletişimini kolaylaştırmak amacıyla kurulan; istek, şikâyet, görüş ve öneri gibi durumlar için \"ALO 150\" hattından, posta yoluyla veya internet üzerinden doğrudan başvuru yapılabilen merkez aşağıdakilerden hangisidir?", "o": ["Kamu Denetçiliği Kurumu", "CİMER (Cumhurbaşkanlığı İletişim Merkezi)", "Kızılay", "Yeşilay"], "a": 1, "e": "Vatandaşların devlet makamlarına istek, dilekçe, öneri veya şikayetlerini hızlı şekilde iletebilmeleri için oluşturulan merkez CİMER'dir (ALO 150)."}, {"q": "Ayşe, televizyonda izlediği bir haberde çevre kirliliği ve orman yangınlarının doğaya büyük zarar verdiğini öğrenmiştir. Doğanın korunması, ağaçlandırma yapılması ve erozyonla mücadele edilmesi konularında gönüllü olarak çalışmak istemektedir. Ayşe'nin bu hedefleri doğrultusunda faaliyetlerine destek verebileceği en uygun sivil toplum kuruluşu aşağıdakilerden hangisidir?", "o": ["Türk Kalp Vakfı", "Darüşşafaka", "LÖSEV", "TEMA Vakfı"], "a": 3, "e": "Türkiye'de çölleşmeyle mücadele, ağaçlandırma ve ormanların, doğal varlıkların korunması alanında öncü sivil toplum kuruluşu TEMA Vakfıdır."}, {"q": "Geleneksel bir sulama yöntemi olan \"salma sulama\", suyun tarlaya serbestçe salındığı bir yöntemdir ve toprağın kalitesini düşürüp su israfına yol açar. \"Basınçlı sulama\" sistemleri ise toprağı korur ve sudan büyük oranda tasarruf sağlar. Salma sulama yerine basınçlı sulama sistemine geçen bir çiftçinin doğaya ve insanlara olan en önemli etkisi nedir?", "o": ["Tarımsal üretimi durdurarak doğanın kendi kendine dinlenmesini sağlaması", "Suyun israf edilmesini önlemesi ve toprak verimliliğini koruyarak gıda üretimine katkı sunması", "Eski yöntemlere göre çok daha fazla elektrik enerjisi israfına yol açması", "Tarladaki bitkilerin köklerinin tamamen susuz kalarak kurumasına neden olması"], "a": 1, "e": "Basınçlı sulama suyun buharlaşmasını ve akıp gitmesini engelleyerek büyük oranda su tasarrufu sağlar, ayrıca toprağın verimli üst katmanının erozyonla yok olmasını durdurur."}, {"q": "Ülkemizde yürütülen \"Sıfır Atık\" projesiyle kullanılmış kâğıt, cam ve plastik gibi geri kazanılabilir atıklar toplanarak hem milyonlarca ağacın kesilmesi önlenmekte hem de ülke ekonomisine kazanç sağlanmaktadır. Sıfır Atık projesine okulunda destek vererek atıkları kaynağında ayrıştıran bir öğrencinin asıl amacı aşağıdakilerden hangisidir?", "o": ["Çöplerin doğada kalma süresini ve kirliliği en üst seviyeye çıkarmak", "Doğal kaynakların verimli kullanılmasını sağlayarak gelecek nesillere daha yaşanabilir, temiz bir dünya bırakmak", "Kullanılamayacak durumdaki atıkları toprağa gömerek gizlemek", "Fabrikaların doğadan daha fazla taze ham madde tüketmesini sağlamak"], "a": 1, "e": "Atıkların yeniden değerlendirilerek ekonomiye ve doğaya kazandırılması çöp miktarını azaltır, hammadde tasarrufu sağlar ve gelecek nesillere temiz bir doğa bırakır."}, {"q": "Fosil yakıtlar olan petrol, kömür ve doğal gaz gibi yenilenemeyen enerji kaynaklarının yanması sonucu ortaya çıkan gazlar havayı ısıtarak küresel iklim değişikliğine yol açmaktadır. Evinde doğal gaz ve elektrik gibi kaynakları gereksiz yere kullanmayarak verimli tüketen bir ailenin asıl katkısı aşağıdakilerden hangisidir?", "o": ["Sera gazı salınımını ve çevre kirliliğini azaltarak iklim değişikliğinin yavaşlamasına destek olmak", "Evdeki cihazların kullanım ömrünü erkenden bitirmek", "Fosil yakıtların dünya üzerinde hiç tükenmemesini kesin olarak garantilemek", "Yenilenemeyen enerji kaynaklarına olan talebi artırarak maliyetleri yükseltmek"], "a": 0, "e": "Yenilenemez enerji kaynaklarının tasarruflu tüketilmesi atmosfere salınan zararlı sera gazlarını azaltır, bu da küresel ısınma ile mücadeleye destek olur."}, {"q": "Marketlerde ücretli poşet uygulamasının ardından plastik poşet kullanımı %65 oranında düşmüş, tüketiciler doğa dostu bir adım atarak alışverişlerinde daha çok bez çanta veya file kullanmaya başlamıştır. Bilinçli bir tüketici olarak plastik poşet yerine sürekli bez çanta kullanan Zeynep'in bu davranışı dünyamızı nasıl etkiler?", "o": ["Doğada yüzyıllarca çözünmeyen ve canlılara zarar veren plastik atık miktarının azalmasını sağlar.", "Ülkenin geri dönüşüme yolladığı atık kağıt miktarını hızla artırır.", "Yeni sanayi tesislerinin kurularak sadece plastik üretmesini teşvik eder.", "Suların ve toprağın kimyasal atıklarla daha fazla kirlenmesine neden olur."], "a": 0, "e": "Plastik poşetlerin doğada parçalanması yüzlerce yıl sürer. Bez çanta veya file kullanmak, doğayı kirleten plastik atık üretimini ve tüketimini azaltır."}, {"q": "Beşinci sınıf öğrencisi Emre, bütçesini planlarken mağazada gördüğü, almazsa hayatında büyük bir eksiklik hissetmeyeceği oldukça pahalı bir ayakkabıyı hemen satın almak istemektedir. Ancak bu ayakkabıyı alırsa temel okul ihtiyaçları olan defter ve çalışma kitaplarını alamayacaktır. Bu durumda \"10 Saniye Kuralı\"nı uygulayan bilinçli bir tüketici olarak Emre'nin hangi kararı vermesi gerekir?", "o": ["Ayakkabıya çok ihtiyacı olmadığı hâlde bütçesini zorlayıp hemen ayakkabıyı almalıdır.", "Ayakkabının anlık bir \"istek\", okul malzemelerinin ise bir \"ihtiyaç\" olduğunu fark edip önceliği eğitim ihtiyaçlarına vermelidir.", "Önce ayakkabıyı alıp, daha sonra sınıftaki arkadaşlarından zorla defter ve kalem istemelidir.", "Bütçe planlamasını bırakıp elindeki tüm parasını gereksiz yere harcamalıdır."], "a": 1, "e": "Bir bütçe hazırlanırken istek olan lüks kalemlerden ziyade ihtiyaç olan, eksikliğinde zarar görülecek malzemelere kesinlikle öncelik verilmelidir."}, {"q": "Aylık gelir ve giderlerini dengede tutmaya çalışan Zeynep Hanım, kış aylarının gelmesiyle artacak olan elektrik ve doğal gaz faturası gibi zorunlu masraflar için her ay bütçesinden küçük bir miktar parayı köşeye ayırmaktadır. Zeynep Hanım'ın gelecekteki ya da beklenmedik ihtiyaçları için bugünden kenara para ayırarak yaptığı bu uygulamaya ekonomide ne ad verilir?", "o": ["İstek", "İsraf", "Tasarruf", "Tüketim"], "a": 2, "e": "Bir gelirin belli bir miktarının harcanmayıp, ilerideki beklenmedik zorunluluklar veya gelecekteki ihtiyaçlar için köşeye ayrılması işlemine ekonomi dilinde tasarruf denir."}, {"q": "Pazarda meyve satan Elif, günlük kazancını harcarken gelir-gider takibi yapmamakta ve genellikle son dakika pahalı alışverişler yapmaktadır. Bir süre sonra evini su basıp acil tamirat gerektiğinde, elinde hiç birikimi olmadığı için çok zor durumda kalmıştır. Elif'in karşılaştığı bu ekonomik sıkıntının temel sebebi aşağıdakilerden hangisidir?", "o": ["Hayatında sürekli temel ihtiyaçlarına öncelik vermesi", "Uygulanabilir bir bütçe planı oluşturmaması ve birikim (tasarruf) yapmaması", "Alışverişlerinde ucuz ürünler satın alarak parasını biriktirmesi", "Sadece isteklerini kısıp eğitim masraflarını artırması"], "a": 1, "e": "Elif'in kriz anında çaresiz kalmasının sebebi; kazancını plansız harcaması, öncelik sırası yapmaması ve geliri içinden zor zamanlar için tasarruf etmemesidir."}, {"q": "Hasan, bayramlarda ve haftalık olarak aldığı harçlıkları hemen atıştırmalık gibi anlık isteklere harcamak yerine; önceden planladığı bir deftere gelir ve giderlerini not etmektedir. Ay sonunda ne kadar parası kalacağını hesaplayan Hasan, aylar sonra çok istediği bisikleti kimseye borçlanmadan kendi birikimiyle satın almıştır. Hasan'ın bu davranışı, bütçe yönetimi açısından hangi becerisinin geliştiğini gösterir?", "o": ["Finansal okuryazarlık becerisine sahip olarak kaynaklarını dengeli kullanabildiğini", "Kazandığı paranın tamamını sadece anlık istekleri uğruna bitirdiğini", "Ailesinin bütçesinden sürekli borç alarak sorunlarını çözdüğünü", "Kendi ihtiyaçlarını görmezden gelerek başkalarının parasını yönettiğini"], "a": 0, "e": "Gelir ve giderini hesaplamak, isteklerine ulaşmak için planlı şekilde birikim yapmak bir finansal okuryazarlık becerisi olup, başarılı bir bütçe yöntemidir."}];
+const LETTERS = ["A","B","C","D"];
+let cur = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+
+const dotsEl = document.getElementById('dots');
+const optsEl = document.getElementById('opts');
+const explainEl = document.getElementById('explain');
+
+function buildDots(){
+  dotsEl.innerHTML = '';
+  QUESTIONS.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.textContent = i+1;
+    d.onclick = ()=>{ cur=i; render(); };
+    dotsEl.appendChild(d);
+  });
+}
+
+function render(){
+  document.getElementById('quiz').style.display='block';
+  document.getElementById('result').classList.remove('show');
+
+  const q = QUESTIONS[cur];
+  document.getElementById('qnum').textContent = cur+1;
+  document.getElementById('qof').textContent = '/ '+QUESTIONS.length+'. soru';
+  document.getElementById('qtext').textContent = q.q;
+  document.getElementById('pfill').style.width = ((cur+1)/QUESTIONS.length*100)+'%';
+
+  [...dotsEl.children].forEach((d,i)=>{
+    d.className = 'dot';
+    if(answers[i]!==null) d.classList.add('answered');
+    if(i===cur) d.classList.add('current');
+  });
+
+  optsEl.innerHTML='';
+  const chosen = answers[cur];
+  q.o.forEach((text,i)=>{
+    const b = document.createElement('button');
+    b.className='opt';
+    b.innerHTML = '<span class="key">'+LETTERS[i]+'</span><span class="txt">'+text+'</span>';
+    if(chosen!==null){
+      b.classList.add('locked');
+      if(i===q.a) b.classList.add('correct');
+      else if(i===chosen) b.classList.add('wrong');
+    }
+    b.onclick=()=>{
+      if(answers[cur]!==null) return;
+      answers[cur]=i;
+      render();
+    };
+    optsEl.appendChild(b);
+  });
+
+  if(chosen!==null){
+    const ok = chosen===q.a;
+    explainEl.innerHTML = (ok?'<b>Doğru!</b> ':'<b>Doğru cevap '+LETTERS[q.a]+'.</b> ')+q.e;
+    explainEl.classList.add('show');
+  } else {
+    explainEl.classList.remove('show');
+  }
+
+  document.getElementById('prev').disabled = (cur===0);
+  const nextBtn = document.getElementById('next');
+  nextBtn.textContent = (cur===QUESTIONS.length-1) ? 'Testi Bitir ✓' : 'Sonraki →';
+}
+
+document.getElementById('prev').onclick=()=>{ if(cur>0){cur--;render();} };
+document.getElementById('next').onclick=()=>{
+  if(cur<QUESTIONS.length-1){ cur++; render(); }
+  else { showResult(); }
+};
+
+function showResult(){
+  let ok=0,no=0,empty=0;
+  QUESTIONS.forEach((q,i)=>{
+    if(answers[i]===null) empty++;
+    else if(answers[i]===q.a) ok++;
+    else no++;
+  });
+  const pct = Math.round(ok/QUESTIONS.length*100);
+  document.getElementById('quiz').style.display='none';
+  document.getElementById('result').classList.add('show');
+  document.getElementById('sok').textContent=ok;
+  document.getElementById('sno').textContent=no;
+  document.getElementById('sempty').textContent=empty;
+  document.getElementById('rpct').textContent=pct+'%';
+  document.getElementById('ring').style.setProperty('--p',pct);
+
+  let emoji,title,line;
+  if(pct>=85){emoji='🏆';title='Harikasın!';line='Çok başarılı bir sonuç, tebrikler.';}
+  else if(pct>=60){emoji='🎉';title='Güzel iş!';line='İyi gidiyorsun, birkaç tekrarla daha da yükselirsin.';}
+  else if(pct>=40){emoji='💪';title='Fena değil!';line='Eksik konuları tekrar edersen çok daha iyi olacak.';}
+  else {emoji='📚';title='Tekrar zamanı';line='Üzülme, konuları gözden geçirip tekrar dene.';}
+  document.getElementById('remoji').textContent=emoji;
+  document.getElementById('rtitle').textContent=title;
+  document.getElementById('rline').textContent=line;
+  document.getElementById('pfill').style.width='100%';
+}
+
+document.getElementById('restart').onclick=()=>{
+  answers = new Array(QUESTIONS.length).fill(null);
+  cur=0; render();
+};
+document.getElementById('review').onclick=()=>{ cur=0; render(); };
+
+buildDots();
+render();
+</script>
+</body>
+</html>
