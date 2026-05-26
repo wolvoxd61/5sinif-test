@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matematik 5 - 2. Dönem 2. Ortak Yazılı Denemesi</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap');
+
+  :root{
+    --bg:#f4ede2;
+    --paper:#fffaf2;
+    --ink:#1e293b;
+    --ink-soft:#54607a;
+    --line:#e6dccb;
+    --brand:#c2410c;
+    --brand-soft:#fde7d3;
+    --green:#15803d;
+    --green-soft:#dcfce7;
+    --red:#b91c1c;
+    --red-soft:#fee2e2;
+    --gold:#b45309;
+    --shadow:0 18px 40px -22px rgba(60,40,20,.45);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Nunito',system-ui,sans-serif;
+    background:
+      radial-gradient(circle at 12% 15%, #f9f1e3 0%, transparent 45%),
+      radial-gradient(circle at 88% 85%, #f3e8d6 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    padding:24px 16px 60px;
+    line-height:1.55;
+  }
+  .wrap{max-width:760px;margin:0 auto}
+
+  header.sheet{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:20px 20px 0 0;
+    padding:26px 30px 22px;
+    box-shadow:var(--shadow);
+    border-bottom:none;
+    position:relative;
+    overflow:hidden;
+  }
+  header.sheet::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:6px;
+    background:linear-gradient(90deg,var(--brand),#ea8a4f,var(--gold));
+  }
+  .badge{
+    display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--brand);
+    background:var(--brand-soft);padding:5px 12px;border-radius:999px;margin-bottom:12px;
+  }
+  header.sheet h1{
+    font-family:'Fraunces',serif;font-weight:700;font-size:1.7rem;line-height:1.15;
+    color:var(--ink);letter-spacing:-.01em;
+  }
+  header.sheet .sub{color:var(--ink-soft);font-size:.95rem;margin-top:6px;font-weight:600}
+
+  .progress-bar{margin-top:20px;height:9px;background:#ece2d2;border-radius:999px;overflow:hidden}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--brand),#ef9a5e);
+    border-radius:999px;transition:width .35s cubic-bezier(.4,0,.2,1)}
+
+  .dots{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+  .dot{
+    width:26px;height:26px;border-radius:8px;border:1.5px solid var(--line);
+    background:#fff;color:var(--ink-soft);font-size:.74rem;font-weight:800;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:all .18s;user-select:none;
+  }
+  .dot:hover{border-color:var(--brand);transform:translateY(-2px)}
+  .dot.answered{background:var(--brand-soft);border-color:#f0c39c;color:var(--brand)}
+  .dot.current{background:var(--brand);border-color:var(--brand);color:#fff;
+    box-shadow:0 4px 12px -3px rgba(194,65,12,.55)}
+
+  main.card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-top:1px dashed var(--line);
+    border-radius:0 0 20px 20px;
+    padding:30px;
+    box-shadow:var(--shadow);
+    min-height:380px;
+    display:flex;flex-direction:column;
+  }
+  .q-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+  .q-num{font-family:'Fraunces',serif;font-size:2rem;font-weight:700;color:var(--brand);line-height:1}
+  .q-of{font-size:.85rem;color:var(--ink-soft);font-weight:700}
+  .q-text{font-size:1.12rem;font-weight:600;color:var(--ink);margin:10px 0 22px;line-height:1.6}
+
+  .options{display:flex;flex-direction:column;gap:11px;flex:1}
+  .opt{
+    display:flex;align-items:flex-start;gap:13px;
+    background:#fff;border:1.5px solid var(--line);border-radius:14px;
+    padding:14px 16px;cursor:pointer;transition:all .16s;text-align:left;font:inherit;
+    color:var(--ink);width:100%;
+  }
+  .opt:hover:not(.locked){border-color:var(--brand);background:#fffdf9;transform:translateX(3px)}
+  .opt .key{
+    flex-shrink:0;width:30px;height:30px;border-radius:9px;background:var(--brand-soft);
+    color:var(--brand);font-weight:800;display:flex;align-items:center;justify-content:center;
+    font-size:.95rem;transition:all .16s;
+  }
+  .opt .txt{font-size:1rem;font-weight:600;padding-top:3px}
+  .opt.selected{border-color:var(--brand);background:var(--brand-soft)}
+  .opt.selected .key{background:var(--brand);color:#fff}
+  .opt.correct{border-color:var(--green);background:var(--green-soft)}
+  .opt.correct .key{background:var(--green);color:#fff}
+  .opt.wrong{border-color:var(--red);background:var(--red-soft)}
+  .opt.wrong .key{background:var(--red);color:#fff}
+  .opt.locked{cursor:default}
+
+  .explain{
+    margin-top:18px;padding:14px 16px;border-radius:12px;
+    background:#f1f6ff;border:1px solid #d6e4ff;font-size:.95rem;color:#1e3a5f;
+    display:none;line-height:1.55;
+  }
+  .explain.show{display:block;animation:fade .3s ease}
+  .explain b{color:var(--brand)}
+  @keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:24px}
+  .btn{
+    font:inherit;font-weight:800;font-size:1rem;border:none;border-radius:13px;
+    padding:13px 24px;cursor:pointer;transition:all .16s;display:flex;align-items:center;gap:8px;
+  }
+  .btn-prev{background:#fff;border:1.5px solid var(--line);color:var(--ink-soft)}
+  .btn-prev:hover:not(:disabled){border-color:var(--ink-soft);color:var(--ink)}
+  .btn-prev:disabled{opacity:.4;cursor:not-allowed}
+  .btn-next{background:var(--brand);color:#fff;margin-left:auto;
+    box-shadow:0 8px 18px -8px rgba(194,65,12,.7)}
+  .btn-next:hover{background:#a8360a;transform:translateY(-1px)}
+
+  /* Sonuç ekranı */
+  .result{display:none;text-align:center;padding:20px 10px;flex-direction:column;align-items:center}
+  .result.show{display:flex;animation:fade .4s ease}
+  .result .emoji{font-size:3.4rem;margin-bottom:8px}
+  .result h2{font-family:'Fraunces',serif;font-size:1.7rem;color:var(--ink);margin-bottom:6px}
+  .score-ring{
+    --p:0; width:150px;height:150px;border-radius:50%;margin:18px auto;
+    background:conic-gradient(var(--brand) calc(var(--p)*1%), #ece2d2 0);
+    display:flex;align-items:center;justify-content:center;position:relative;
+  }
+  .score-ring::after{content:"";position:absolute;inset:14px;background:var(--paper);border-radius:50%}
+  .score-ring .inner{position:relative;z-index:1;text-align:center}
+  .score-ring .big{font-family:'Fraunces',serif;font-size:2.2rem;font-weight:700;color:var(--brand);line-height:1}
+  .score-ring .small{font-size:.8rem;color:var(--ink-soft);font-weight:700}
+  .result .line{color:var(--ink-soft);font-size:1.05rem;font-weight:600;margin-top:4px}
+  .result-stats{display:flex;gap:14px;margin:20px 0 4px;flex-wrap:wrap;justify-content:center}
+  .stat{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px 22px;min-width:90px}
+  .stat .n{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700}
+  .stat .l{font-size:.78rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em}
+  .stat.ok .n{color:var(--green)} .stat.no .n{color:var(--red)} .stat.empty .n{color:var(--ink-soft)}
+  .btn-restart{background:var(--brand);color:#fff;margin-top:24px;
+    box-shadow:0 8px 18px -8px rgba(194,65,12,.7)}
+  .btn-restart:hover{background:#a8360a;transform:translateY(-1px)}
+  .btn-review{background:#fff;border:1.5px solid var(--line);color:var(--ink-soft);margin-top:12px}
+  .btn-review:hover{border-color:var(--brand);color:var(--brand)}
+
+  /* Logo imza */
+  .signature{
+    position:fixed;right:18px;bottom:14px;width:62px;opacity:.5;
+    pointer-events:none;z-index:50;filter:saturate(.9);
+    transition:opacity .3s;
+  }
+  .signature:hover{opacity:.8}
+
+  footer.note{text-align:center;color:var(--ink-soft);font-size:.82rem;margin-top:22px;font-weight:600;opacity:.7}
+
+  @media(max-width:560px){
+    body{padding:16px 10px 70px}
+    header.sheet,main.card{padding:22px 18px}
+    header.sheet h1{font-size:1.4rem}
+    .q-text{font-size:1.05rem}
+    .signature{width:50px;right:10px;bottom:10px}
+    .btn{padding:12px 18px;font-size:.95rem}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="sheet">
+    <span class="badge">2. Dönem · 2. Ortak Yazılı</span>
+    <h1>Matematik 5 — Deneme Sınavı</h1>
+    <div class="sub">Senaryo 4 · 20 Soru · Çoktan Seçmeli</div>
+    <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+    <div class="dots" id="dots"></div>
+  </header>
+
+  <main class="card">
+    <div id="quiz">
+      <div class="q-head">
+        <span class="q-num" id="qnum">1</span>
+        <span class="q-of" id="qof">/ 20. soru</span>
+      </div>
+      <div class="q-text" id="qtext"></div>
+      <div class="options" id="opts"></div>
+      <div class="explain" id="explain"></div>
+      <div class="nav">
+        <button class="btn btn-prev" id="prev">&larr; Önceki</button>
+        <button class="btn btn-next" id="next">Sonraki &rarr;</button>
+      </div>
+    </div>
+
+    <div class="result" id="result">
+      <div class="emoji" id="remoji">🎉</div>
+      <h2 id="rtitle">Test Tamamlandı!</h2>
+      <div class="score-ring" id="ring"><div class="inner">
+        <div class="big" id="rpct">0%</div><div class="small">başarı</div>
+      </div></div>
+      <div class="line" id="rline"></div>
+      <div class="result-stats">
+        <div class="stat ok"><div class="n" id="sok">0</div><div class="l">Doğru</div></div>
+        <div class="stat no"><div class="n" id="sno">0</div><div class="l">Yanlış</div></div>
+        <div class="stat empty"><div class="n" id="sempty">0</div><div class="l">Boş</div></div>
+      </div>
+      <button class="btn btn-review" id="review">Cevapları İncele</button>
+      <button class="btn btn-restart" id="restart">Testi Yeniden Başlat</button>
+    </div>
+  </main>
+
+  <footer class="note">Cevaplarını işaretledikten sonra açıklamayı görebilir, istediğin soruya geri dönebilirsin.</footer>
+</div>
+
+<img class="signature" src="data:image/png;base64,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" alt="imza">
+
+<script>
+const QUESTIONS = [{"q": "Arkadaşlarıyla buluşacak olan üç öğrencinin telefon şarj durumları şu şekildedir: Alper'in telefonunun şarjı %75, Betül'ün şarjı 4/5 ve Cansu'nun şarjı 0,82'dir. Buluşmaya giderken telefonunun şarjı en fazla olan öğrenci hangisidir?", "o": ["Alper", "Betül", "Cansu", "Alper ve Betül'ün şarjları eşittir."], "a": 2, "e": "Betül 4/5 = %80, Cansu 0,82 = %82, Alper %75. En büyük değer %82 ile Cansu'dur."}, {"q": "Aynı büyüklükteki üç pizzayı sipariş eden arkadaşlardan Elif kendi pizzasının 1/4'ünü, Can kendi pizzasının %30'unu, Aslı ise kendi pizzasının 0,2'sini yemiştir. Buna göre en çok ve en az pizza yiyen kişiler hangi seçenekte doğru verilmiştir?", "o": ["En çok Can, En az Aslı", "En çok Elif, En az Aslı", "En çok Can, En az Elif", "En çok Aslı, En az Can"], "a": 0, "e": "Elif 1/4 = %25, Aslı 0,2 = %20, Can %30. En çok Can (%30), en az Aslı (%20) yemiştir."}, {"q": "Bir mağazada aynı fiyatlı üç farklı üründe yıl sonu indirimi yapılmıştır. A ürününde fiyatın 2/5'i kadar, B ürününde %35'i kadar, C ürününde ise 0,45'i kadar indirim uygulanmıştır. Bütçesine en uygun alışverişi yapmak isteyen biri, en büyük indirimin uygulandığı ürünü seçmek isterse hangisini almalıdır?", "o": ["A ürünü", "B ürünü", "C ürünü", "B ve C ürünü"], "a": 2, "e": "A: 2/5 = %40, B: %35, C: 0,45 = %45. %45 içlerindeki en yüksek indirim oranıdır."}, {"q": "Bir kütüphanede hafta sonu ödünç alınan kitap türlerinin dağılımı aşağıdaki gibidir: Roman: 45 adet, Masal: 30 adet, Çizgi Roman: 15 adet, Bilim Dergisi: 25 adet. Kütüphaneci, elinde en çok biriken ve okurların en az ilgi gösterdiği türü okumaya teşvik etmek için bir kampanya başlatacaktır. Buna göre kampanya hangi tür üzerine yapılmalıdır?", "o": ["Roman", "Masal", "Bilim Dergisi", "Çizgi Roman"], "a": 3, "e": "Satış verilerine göre 15 adet ile en az alınan tür çizgi romandır; kampanya bu tür için yapılmalıdır."}, {"q": "5/A sınıfındaki öğrencilerin hafta sonu gittikleri spor kurslarına göre dağılımı şöyledir: Yüzme kursuna 12, Basketbola 8, Satranca 6, Tenise 4 öğrenci gitmektedir. Sınıfa yeni nakil gelen iki öğrenci de en sevdikleri kursun \"Satranç\" olduğunu ve bu kursa yazılacaklarını söylemiştir. Son durumda satranç kursuna giden öğrenci sayısı kaç olmuştur?", "o": ["4", "6", "8", "10"], "a": 2, "e": "Başlangıçta 6 öğrenci satranç kursundayken, 2 kişinin daha katılmasıyla yeni sayı 6 + 2 = 8 olur."}, {"q": "Bir sınıftaki öğrencilerin sevdikleri meyvelere göre sayıları şu şekildedir: Elma (8 kişi), Muz (12 kişi), Çilek (6 kişi), Portakal (4 kişi). Sınıf öğretmeni, yıl sonu partisinde öğrencilere sürpriz yapmak için en çok sevilen iki meyveyi satın almak istiyor. Öğretmen hangi meyveleri almalıdır?", "o": ["Muz ve Elma", "Elma ve Çilek", "Çilek ve Portakal", "Muz ve Çilek"], "a": 0, "e": "Tabloda sayıca en yüksek değere sahip iki meyve 12 ile Muz ve 8 ile Elmadır."}, {"q": "Bir manavda gün boyunca 40 kg elma, 25 kg portakal, 10 kg muz satılmıştır. Manav defterini inceleyen dükkan sahibi, en çok satılan meyve ile en az satılan meyve arasındaki satış miktarının (farkın) kaç kilogram olduğunu hesaplamıştır. Bu fark kaçtır?", "o": ["15", "25", "30", "35"], "a": 2, "e": "En çok satılan Elma (40 kg) ile en az satılan Muz (10 kg) arasındaki fark 40 - 10 = 30 kilogramdır."}, {"q": "Okula ulaşımları incelenen bir gruptaki öğrencilerin 150'si servisle, 100'ü yürüyerek, 50'si ise aile aracıyla gelmektedir. Okul müdürü \"Sağlıklı Yaşam\" projesi kapsamında sadece okula yürüyerek gelen öğrencilere birer spor matarası hediye edecektir. Müdür Bey kaç adet matara siparişi vermelidir?", "o": ["50", "100", "150", "300"], "a": 1, "e": "Yürüyerek geldiği belirtilen öğrencilerin sayısı verilerde açıkça 100 olarak belirtilmiştir, bu nedenle 100 matara gerekir."}, {"q": "Bir okulda \"Sıfır Atık\" projesi kapsamında toplanan atık miktarları şöyledir: Pazartesi 50 kg, Salı 40 kg, Çarşamba 20 kg. Panodaki bu verileri inceleyen bir öğrenci, \"Öğrenciler her geçen gün geri dönüşüme daha fazla atık getirerek harika bir rekor kırmaktadır!\" yorumunu yapmıştır. Bu yorum hakkında ne söylenebilir?", "o": ["Doğrudur, çünkü toplam atık miktarı çok fazladır.", "Yanlıştır, çünkü toplanan atık miktarı her geçen gün artmak yerine azalmaktadır.", "Doğrudur, çünkü en çok atık Pazartesi günü toplanmıştır.", "Yanlıştır, çünkü Çarşamba günü atık toplanmamıştır."], "a": 1, "e": "Veriler 50 kg'dan başlayıp 40 ve 20 kg'a düştüğü için miktar artmıyor, aksine azalıyor; bu nedenle yorum yanlıştır."}, {"q": "Okul basketbol takımındaki oyuncuların bir maçta attıkları sayılar şöyledir: Ali 14, Can 10, Efe 14, Berk 6. Maçı anlatan bir spiker, \"Ali, bu maçta takımın tartışmasız tek ve en skorer (en çok sayı atan) ismidir!\" demiştir. Spikerin bu yorumu doğru mudur?", "o": ["Evet, çünkü 14 maçtaki en yüksek sayıdır.", "Hayır, çünkü Berk takıma en az katkıyı sağlamıştır.", "Hayır, çünkü Efe de 14 sayı atmıştır ve Ali tek başına en skorer değildir.", "Evet, çünkü Ali ve Efe toplamda 28 sayı atmıştır."], "a": 2, "e": "Ali 14 sayı atmıştır fakat Efe de 14 sayı atmıştır. Ali zirveyi Efe ile paylaştığı için \"tek başına\" lider değildir."}, {"q": "Bir mahallede yapılan ulaşım anketinde okula \"Servis\" ile giden 45 kişi, \"Yürüyerek\" giden 35 kişi, \"Aile aracı\" ile giden 15 kişi olduğu görülmüştür. Verileri inceleyen bir veli, \"Okula yürüyerek giden öğrenci sayısı, aile aracıyla gidenlerin sayısından daha azdır.\" demiştir. Bu velinin yorumu için aşağıdakilerden hangisi doğrudur?", "o": ["Doğrudur, çünkü yürüyerek gitmek her zaman daha yavaş ve zordur.", "Yanlıştır, çünkü yürüyerek giden 35 kişi, aile aracıyla giden 15 kişiden fazladır.", "Doğrudur, çünkü servis kullananlar en kalabalık gruptur.", "Yanlıştır, çünkü ankete toplam 95 öğrenci katılmıştır."], "a": 1, "e": "Yürüyerek gidenlerin sayısı (35), aile aracıyla gidenlerin sayısından (15) matematiksel olarak daha büyüktür."}, {"q": "Eşit kollu bir terazinin sol kefesinde 4 kg ve 7 kg ağırlığında iki kutu bulunmaktadır. Sağ kefesinde ise 5 kg ağırlığında bir kutu ve ağırlığı bilinmeyen kapalı bir hediye paketi vardır. Terazi dengede olduğuna göre hediye paketinin ağırlığı kaç kilogramdır?", "o": ["5", "6", "7", "8"], "a": 1, "e": "Sol tarafın toplamı 4+7=11 kg'dır. Sağ tarafın da 11 olması için 5 kg'ın yanına 6 kg (5+6=11) eklenmelidir."}, {"q": "Ayşe Öğretmen, tahtaya \" 20 + 12 = 18 + ▲ \" şeklinde bir matematiksel eşitlik (denge) yazmıştır. Terazinin iki kefesi gibi düşünüldüğünde eşitliğin korunması için ▲ yerine hangi sayı yazılmalıdır ve nedeni nedir?", "o": ["14 yazılmalıdır; çünkü sol tarafın toplamı 32'dir, sağ tarafın da 32 olması için 18'e 14 eklenmelidir.", "32 yazılmalıdır; çünkü eşitliğin sol tarafındaki sayıların toplamı 32'dir.", "12 yazılmalıdır; çünkü her iki tarafta da aynı sayılar bulunmak zorundadır.", "2 yazılmalıdır; çünkü 20'den 18 çıkarsa geriye 2 kalır."], "a": 0, "e": "Eşitliğin sol kısmı 32 ediyor, bu dengenin bozulmaması için sağ tarafın da 32 olması gerekir; dolayısıyla 18'e 14 eklenmelidir."}, {"q": "Elif'in kumbarasında 30 TL'si, kardeşi Can'ın ise 18 TL'si vardır. Elif kendi parasından bir miktarını çıkarıp kardeşine vererek her ikisinin de paralarını eşitlemek istiyor. Eşitliğin sağlanabilmesi için Elif, kardeşine kaç TL vermelidir?", "o": ["4", "6", "8", "12"], "a": 1, "e": "İki paranın toplamı 48 TL'dir. Her ikisinde eşit miktar olması için 24'er TL olmalıdır. Elif 30'dan 24'e düşmek için 6 TL vermelidir."}, {"q": "Bir kırtasiyeden tanesi 15 TL olan defterlerden 4 tane ve tek paketi 20 TL olan bir kalem seti alan Zeynep kasaya gider. Zeynep'in kasiyere ödeyeceği toplam parayı bulmamızı sağlayan doğru matematiksel işlem aşağıdakilerden hangisidir?", "o": ["4 + 15 x 20", "(4 + 15) x 20", "(4 x 15) + 20", "4 x (15 + 20)"], "a": 2, "e": "Önce alınacak 4 adet defterin ücreti hesaplanmalı (4 x 15), sonra bunun üzerine tek bir set alınan kalemin (20 TL) fiyatı eklenmelidir."}, {"q": "Bir fırıncı, sabah topladığı 60 elmanın 4 tanesini çürük olduğu için çöpe atıyor. Geriye kalan sağlam elmaları ise dükkanındaki 8 sepete eşit sayıda paylaştırıyor. Bir sepete düşen elma sayısını bulmak isteyen çırağın kullanması gereken doğru işlem önceliği aşağıdakilerden hangisidir?", "o": ["60 - (4 / 8)", "60 - 4 / 8", "60 / 8 - 4", "(60 - 4) / 8"], "a": 3, "e": "Sepetlere dağıtma (bölme) işlemi yapılmadan önce çürük elmalar atılacağı (çıkarma) için çıkarma işlemi parantez içine alınmalıdır."}, {"q": "İnternette oynanan bir bilgi yarışmasında başlangıçta her oyuncuya 20 puan verilmektedir. Oyuncu her doğru hamle için 5 puan kazanırken, bastığı her tuzak için 4 puan kaybetmektedir. Sırasıyla 3 doğru hamle yapıp, ardından bir tuzağa basan yarışmacının puanını hesaplayan işlem dizilimi aşağıdakilerden hangisidir?", "o": ["20 + 3 x 5 - 4", "20 + 3 x (5 - 4)", "(20 + 3) x 5 - 4", "20 x 3 + 5 - 4"], "a": 0, "e": "Ana puanın (20) üzerine 3 adet 5 puanlık doğru ekleneceği için önce (3 x 5) çarpılır, sonra ceza olan 4 puan çıkarılır."}, {"q": "Birikim yapmaya karar veren Cem, kumbarasına ilk gün 15 TL atıyor. Sonraki her gün harçlığından artırdığı 6 TL'yi kumbarasına ekliyor. Kumbaradan hiç para almayan Cem'in 5. günün sonunda kumbarasında kaç TL'si olur?", "o": ["33", "39", "45", "51"], "a": 1, "e": "1. gün: 15, 2. gün: 21, 3. gün: 27, 4. gün: 33, 5. gün: 39 TL'si olur. (Her adıma 6 eklenir)."}, {"q": "Bir restoranda kare şeklindeki masalar yan yana getirilerek kalabalık misafirler için uzun masalar oluşturulmaktadır. Sadece 1 masanın etrafına 4 sandalye konulabiliyor. 2 masa yan yana birleştirildiğinde 6 sandalye, 3 masa birleştirildiğinde 8 sandalye sığıyor. Bu masa-sandalye örüntüsüne göre, 6 masanın yan yana birleştirildiği bir ziyafette toplam kaç sandalyeye ihtiyaç vardır?", "o": ["12", "14", "16", "18"], "a": 1, "e": "Her yeni masa eklendiğinde karşılıklı 2 sandalye artar (Kural: masa sayısının 2 katının 2 fazlası). 6 x 2 = 12, 12 + 2 = 14 sandalye sığar."}, {"q": "Bahçesine yeni bir fidan diken bir çiftçi, fidanın gelişimini incelemektedir. Fidan toprağa dikildiğinde boyu 10 cm'dir. Çiftçi, düzenli sulamayla fidanın her hafta 4 cm uzadığını fark eder. Büyüme bu kurala göre devam ettiğinde, fidanın boyunun 34 cm'ye ulaştığı hafta kaçıncı haftadır?", "o": ["4. hafta", "5. hafta", "6. hafta", "7. hafta"], "a": 2, "e": "Fidan 34 cm olduğunda başlangıçtaki 10 cm'nin üzerine 24 cm uzamış olur. Her hafta 4 cm uzadığı için 24 / 4 = 6 haftalık bir süre geçmiştir."}];
+const LETTERS = ["A","B","C","D"];
+let cur = 0;
+let answers = new Array(QUESTIONS.length).fill(null); // seçilen indeks
+let reviewMode = false;
+
+const dotsEl = document.getElementById('dots');
+const optsEl = document.getElementById('opts');
+const explainEl = document.getElementById('explain');
+
+function buildDots(){
+  dotsEl.innerHTML = '';
+  QUESTIONS.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.textContent = i+1;
+    d.onclick = ()=>{ cur=i; render(); };
+    dotsEl.appendChild(d);
+  });
+}
+
+function render(){
+  document.getElementById('quiz').style.display='block';
+  document.getElementById('result').classList.remove('show');
+
+  const q = QUESTIONS[cur];
+  document.getElementById('qnum').textContent = cur+1;
+  document.getElementById('qof').textContent = '/ '+QUESTIONS.length+'. soru';
+  document.getElementById('qtext').textContent = q.q;
+
+  // ilerleme
+  document.getElementById('pfill').style.width = ((cur+1)/QUESTIONS.length*100)+'%';
+
+  // noktalar
+  [...dotsEl.children].forEach((d,i)=>{
+    d.className = 'dot';
+    if(answers[i]!==null) d.classList.add('answered');
+    if(i===cur) d.classList.add('current');
+  });
+
+  // seçenekler
+  optsEl.innerHTML='';
+  const chosen = answers[cur];
+  q.o.forEach((text,i)=>{
+    const b = document.createElement('button');
+    b.className='opt';
+    b.innerHTML = '<span class="key">'+LETTERS[i]+'</span><span class="txt">'+text+'</span>';
+    if(chosen!==null){
+      b.classList.add('locked');
+      if(i===q.a) b.classList.add('correct');
+      else if(i===chosen) b.classList.add('wrong');
+    }
+    b.onclick=()=>{
+      if(answers[cur]!==null) return; // tekrar değiştirilemez
+      answers[cur]=i;
+      render();
+    };
+    optsEl.appendChild(b);
+  });
+
+  // açıklama
+  if(chosen!==null){
+    const ok = chosen===q.a;
+    explainEl.innerHTML = (ok?'<b>Doğru!</b> ':'<b>Doğru cevap '+LETTERS[q.a]+'.</b> ')+q.e;
+    explainEl.classList.add('show');
+  } else {
+    explainEl.classList.remove('show');
+  }
+
+  // navigasyon
+  document.getElementById('prev').disabled = (cur===0);
+  const nextBtn = document.getElementById('next');
+  nextBtn.textContent = (cur===QUESTIONS.length-1) ? 'Testi Bitir ✓' : 'Sonraki →';
+}
+
+document.getElementById('prev').onclick=()=>{ if(cur>0){cur--;render();} };
+document.getElementById('next').onclick=()=>{
+  if(cur<QUESTIONS.length-1){ cur++; render(); }
+  else { showResult(); }
+};
+
+function showResult(){
+  let ok=0,no=0,empty=0;
+  QUESTIONS.forEach((q,i)=>{
+    if(answers[i]===null) empty++;
+    else if(answers[i]===q.a) ok++;
+    else no++;
+  });
+  const pct = Math.round(ok/QUESTIONS.length*100);
+  document.getElementById('quiz').style.display='none';
+  const r = document.getElementById('result');
+  r.classList.add('show');
+  document.getElementById('sok').textContent=ok;
+  document.getElementById('sno').textContent=no;
+  document.getElementById('sempty').textContent=empty;
+  document.getElementById('rpct').textContent=pct+'%';
+  document.getElementById('ring').style.setProperty('--p',pct);
+
+  let emoji,title,line;
+  if(pct>=85){emoji='🏆';title='Harikasın!';line='Çok başarılı bir sonuç, tebrikler.';}
+  else if(pct>=60){emoji='🎉';title='Güzel iş!';line='İyi gidiyorsun, birkaç tekrarla daha da yükselirsin.';}
+  else if(pct>=40){emoji='💪';title='Fena değil!';line='Eksik konuları tekrar edersen çok daha iyi olacak.';}
+  else {emoji='📚';title='Tekrar zamanı';line='Üzülme, konuları gözden geçirip tekrar dene.';}
+  document.getElementById('remoji').textContent=emoji;
+  document.getElementById('rtitle').textContent=title;
+  document.getElementById('rline').textContent=line;
+  document.getElementById('pfill').style.width='100%';
+}
+
+document.getElementById('restart').onclick=()=>{
+  answers = new Array(QUESTIONS.length).fill(null);
+  cur=0; render();
+};
+document.getElementById('review').onclick=()=>{
+  cur=0; render();
+};
+
+buildDots();
+render();
+</script>
+</body>
+</html>
