@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Türkçe 5 - Deneme Sınavı</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Nunito:wght@400;600;700;800&display=swap');
+
+  :root{
+    --bg:#f1ebe6;
+    --paper:#fbf7f3;
+    --ink:#2a1a1a;
+    --ink-soft:#6a5252;
+    --line:#e6d8d0;
+    --brand:#9d174d;
+    --brand-soft:#fbe1ec;
+    --green:#15803d;
+    --green-soft:#dcfce7;
+    --red:#b91c1c;
+    --red-soft:#fee2e2;
+    --gold:#be185d;
+    --text-bg:#f7e9d4;
+    --text-border:#e0c79d;
+    --shadow:0 18px 40px -22px rgba(80,30,50,.45);
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Nunito',system-ui,sans-serif;
+    background:
+      radial-gradient(circle at 12% 15%, #f3e8e0 0%, transparent 45%),
+      radial-gradient(circle at 88% 85%, #ede0d6 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    min-height:100vh;
+    padding:24px 16px 60px;
+    line-height:1.55;
+  }
+  .wrap{max-width:780px;margin:0 auto}
+
+  header.sheet{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:20px 20px 0 0;
+    padding:26px 30px 22px;
+    box-shadow:var(--shadow);
+    border-bottom:none;
+    position:relative;overflow:hidden;
+  }
+  header.sheet::before{
+    content:"";position:absolute;top:0;left:0;right:0;height:6px;
+    background:linear-gradient(90deg,var(--brand),#d63384,var(--gold));
+  }
+  .badge{
+    display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.14em;
+    text-transform:uppercase;color:var(--brand);
+    background:var(--brand-soft);padding:5px 12px;border-radius:999px;margin-bottom:12px;
+  }
+  header.sheet h1{
+    font-family:'Fraunces',serif;font-weight:700;font-size:1.7rem;line-height:1.15;
+    color:var(--ink);letter-spacing:-.01em;
+  }
+  header.sheet .sub{color:var(--ink-soft);font-size:.95rem;margin-top:6px;font-weight:600}
+
+  .progress-bar{margin-top:20px;height:9px;background:#ebdfd8;border-radius:999px;overflow:hidden}
+  .progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--brand),#e35d96);
+    border-radius:999px;transition:width .35s cubic-bezier(.4,0,.2,1)}
+
+  .dots{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px}
+  .dot{
+    width:24px;height:24px;border-radius:7px;border:1.5px solid var(--line);
+    background:#fff;color:var(--ink-soft);font-size:.7rem;font-weight:800;
+    display:flex;align-items:center;justify-content:center;cursor:pointer;
+    transition:all .18s;user-select:none;
+  }
+  .dot:hover{border-color:var(--brand);transform:translateY(-2px)}
+  .dot.answered{background:var(--brand-soft);border-color:#e9b9cf;color:var(--brand)}
+  .dot.current{background:var(--brand);border-color:var(--brand);color:#fff;
+    box-shadow:0 4px 12px -3px rgba(157,23,77,.55)}
+
+  main.card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-top:1px dashed var(--line);
+    border-radius:0 0 20px 20px;
+    padding:28px 30px;
+    box-shadow:var(--shadow);
+    min-height:380px;
+    display:flex;flex-direction:column;
+  }
+
+  .passage{
+    background:var(--text-bg);
+    border:1px solid var(--text-border);
+    border-radius:14px;
+    margin-bottom:20px;
+    overflow:hidden;
+  }
+  .passage-head{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:11px 16px;cursor:pointer;user-select:none;
+    background:rgba(180,130,80,.08);
+  }
+  .passage-head:hover{background:rgba(180,130,80,.14)}
+  .passage-title{font-family:'Fraunces',serif;font-weight:700;font-size:1rem;color:#7a4a1a}
+  .passage-toggle{font-size:.78rem;font-weight:800;color:#7a4a1a;letter-spacing:.05em}
+  .passage-body{
+    padding:14px 18px 18px;border-top:1px dashed var(--text-border);
+    font-size:.98rem;line-height:1.7;color:#3d2817;font-family:'Fraunces',serif;font-weight:500;
+  }
+  .passage.collapsed .passage-body{display:none}
+
+  .q-head{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+  .q-num{font-family:'Fraunces',serif;font-size:1.9rem;font-weight:700;color:var(--brand);line-height:1}
+  .q-of{font-size:.85rem;color:var(--ink-soft);font-weight:700}
+  .q-text{font-size:1.08rem;font-weight:600;color:var(--ink);margin:10px 0 20px;line-height:1.6}
+
+  .options{display:flex;flex-direction:column;gap:10px;flex:1}
+  .opt{
+    display:flex;align-items:flex-start;gap:13px;
+    background:#fff;border:1.5px solid var(--line);border-radius:14px;
+    padding:13px 16px;cursor:pointer;transition:all .16s;text-align:left;font:inherit;
+    color:var(--ink);width:100%;
+  }
+  .opt:hover:not(.locked){border-color:var(--brand);background:#fffaf7;transform:translateX(3px)}
+  .opt .key{
+    flex-shrink:0;width:30px;height:30px;border-radius:9px;background:var(--brand-soft);
+    color:var(--brand);font-weight:800;display:flex;align-items:center;justify-content:center;
+    font-size:.95rem;transition:all .16s;
+  }
+  .opt .txt{font-size:.98rem;font-weight:600;padding-top:3px}
+  .opt.selected{border-color:var(--brand);background:var(--brand-soft)}
+  .opt.selected .key{background:var(--brand);color:#fff}
+  .opt.correct{border-color:var(--green);background:var(--green-soft)}
+  .opt.correct .key{background:var(--green);color:#fff}
+  .opt.wrong{border-color:var(--red);background:var(--red-soft)}
+  .opt.wrong .key{background:var(--red);color:#fff}
+  .opt.locked{cursor:default}
+
+  .explain{
+    margin-top:16px;padding:13px 16px;border-radius:12px;
+    background:#fef3f7;border:1px solid #f3cfe0;font-size:.94rem;color:#5a1a3a;
+    display:none;line-height:1.55;
+  }
+  .explain.show{display:block;animation:fade .3s ease}
+  .explain b{color:var(--brand)}
+  @keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+  .nav{display:flex;justify-content:space-between;gap:12px;margin-top:22px}
+  .btn{
+    font:inherit;font-weight:800;font-size:1rem;border:none;border-radius:13px;
+    padding:13px 24px;cursor:pointer;transition:all .16s;display:flex;align-items:center;gap:8px;
+  }
+  .btn-prev{background:#fff;border:1.5px solid var(--line);color:var(--ink-soft)}
+  .btn-prev:hover:not(:disabled){border-color:var(--ink-soft);color:var(--ink)}
+  .btn-prev:disabled{opacity:.4;cursor:not-allowed}
+  .btn-next{background:var(--brand);color:#fff;margin-left:auto;
+    box-shadow:0 8px 18px -8px rgba(157,23,77,.7)}
+  .btn-next:hover{background:#7a103d;transform:translateY(-1px)}
+
+  .result{display:none;text-align:center;padding:20px 10px;flex-direction:column;align-items:center}
+  .result.show{display:flex;animation:fade .4s ease}
+  .result .emoji{font-size:3.4rem;margin-bottom:8px}
+  .result h2{font-family:'Fraunces',serif;font-size:1.7rem;color:var(--ink);margin-bottom:6px}
+  .score-ring{
+    --p:0; width:150px;height:150px;border-radius:50%;margin:18px auto;
+    background:conic-gradient(var(--brand) calc(var(--p)*1%), #ebdfd8 0);
+    display:flex;align-items:center;justify-content:center;position:relative;
+  }
+  .score-ring::after{content:"";position:absolute;inset:14px;background:var(--paper);border-radius:50%}
+  .score-ring .inner{position:relative;z-index:1;text-align:center}
+  .score-ring .big{font-family:'Fraunces',serif;font-size:2.2rem;font-weight:700;color:var(--brand);line-height:1}
+  .score-ring .small{font-size:.8rem;color:var(--ink-soft);font-weight:700}
+  .result .line{color:var(--ink-soft);font-size:1.05rem;font-weight:600;margin-top:4px}
+  .result-stats{display:flex;gap:14px;margin:20px 0 4px;flex-wrap:wrap;justify-content:center}
+  .stat{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px 22px;min-width:90px}
+  .stat .n{font-family:'Fraunces',serif;font-size:1.5rem;font-weight:700}
+  .stat .l{font-size:.78rem;font-weight:700;color:var(--ink-soft);text-transform:uppercase;letter-spacing:.05em}
+  .stat.ok .n{color:var(--green)} .stat.no .n{color:var(--red)} .stat.empty .n{color:var(--ink-soft)}
+  .btn-restart{background:var(--brand);color:#fff;margin-top:24px;
+    box-shadow:0 8px 18px -8px rgba(157,23,77,.7)}
+  .btn-restart:hover{background:#7a103d;transform:translateY(-1px)}
+  .btn-review{background:#fff;border:1.5px solid var(--line);color:var(--ink-soft);margin-top:12px}
+  .btn-review:hover{border-color:var(--brand);color:var(--brand)}
+
+  .signature{
+    position:fixed;right:18px;bottom:14px;width:62px;opacity:.5;
+    pointer-events:none;z-index:50;filter:saturate(.9);transition:opacity .3s;
+  }
+  .signature:hover{opacity:.8}
+
+  footer.note{text-align:center;color:var(--ink-soft);font-size:.82rem;margin-top:22px;font-weight:600;opacity:.7}
+
+  @media(max-width:560px){
+    body{padding:16px 10px 70px}
+    header.sheet,main.card{padding:22px 18px}
+    header.sheet h1{font-size:1.4rem}
+    .q-text{font-size:1.02rem}
+    .signature{width:50px;right:10px;bottom:10px}
+    .btn{padding:12px 18px;font-size:.95rem}
+    .dot{width:22px;height:22px;font-size:.65rem}
+    .passage-body{font-size:.94rem}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="sheet">
+    <span class="badge">5. Sınıf · Türkçe Deneme</span>
+    <h1>Türkçe 5 — Deneme Sınavı</h1>
+    <div class="sub">7 Metin · 50 Soru · Çoktan Seçmeli</div>
+    <div class="progress-bar"><div class="progress-fill" id="pfill"></div></div>
+    <div class="dots" id="dots"></div>
+  </header>
+
+  <main class="card">
+    <div id="quiz">
+      <div class="passage" id="passage">
+        <div class="passage-head" id="passageHead">
+          <span class="passage-title" id="passageTitle"></span>
+          <span class="passage-toggle" id="passageToggle">GİZLE ▲</span>
+        </div>
+        <div class="passage-body" id="passageBody"></div>
+      </div>
+
+      <div class="q-head">
+        <span class="q-num" id="qnum">1</span>
+        <span class="q-of" id="qof">/ 50. soru</span>
+      </div>
+      <div class="q-text" id="qtext"></div>
+      <div class="options" id="opts"></div>
+      <div class="explain" id="explain"></div>
+      <div class="nav">
+        <button class="btn btn-prev" id="prev">&larr; Önceki</button>
+        <button class="btn btn-next" id="next">Sonraki &rarr;</button>
+      </div>
+    </div>
+
+    <div class="result" id="result">
+      <div class="emoji" id="remoji">🎉</div>
+      <h2 id="rtitle">Test Tamamlandı!</h2>
+      <div class="score-ring" id="ring"><div class="inner">
+        <div class="big" id="rpct">0%</div><div class="small">başarı</div>
+      </div></div>
+      <div class="line" id="rline"></div>
+      <div class="result-stats">
+        <div class="stat ok"><div class="n" id="sok">0</div><div class="l">Doğru</div></div>
+        <div class="stat no"><div class="n" id="sno">0</div><div class="l">Yanlış</div></div>
+        <div class="stat empty"><div class="n" id="sempty">0</div><div class="l">Boş</div></div>
+      </div>
+      <button class="btn btn-review" id="review">Cevapları İncele</button>
+      <button class="btn btn-restart" id="restart">Testi Yeniden Başlat</button>
+    </div>
+  </main>
+
+  <footer class="note">Önce metni oku, sonra soruyu cevapla. İstediğin soruya geri dönebilirsin.</footer>
+</div>
+
+<img class="signature" src="data:image/png;base64,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" alt="imza">
+
+<script>
+const QUESTIONS = [{"t": 1, "q": "Moni'nin \"Oyunda bir sorun varsa bir öğrenme fırsatı da vardı\" anlayışından yola çıkarak onun hayata bakış açısıyla ilgili satır arasındaki derin anlam nedir?", "o": ["Sorunları sadece başkalarının çözmesini beklemektedir.", "Kuralları kendi çıkarına göre esnetmeyi sevmektedir.", "Karşılaşılan krizlerin ve engellerin, yeni ve yaratıcı çözümler bulmak için bir şans olduğuna inanmaktadır.", "Gerçek bir topla oynamayı sevmediği için topun patlamasını bilerek istemiştir."], "a": 2}, {"t": 1, "q": "Top patladığında Moni'nin tutumu ile diğer çocukların tutumu karşılaştırıldığında aşağıdaki sonuçlardan hangisi çıkarılır?", "o": ["Diğer çocuklar çaresizliğe kapılıp üzülürken, Moni olumsuzluğa takılmayıp anında yeni bir çözüm üretmeye odaklanmıştır.", "İkisi de hemen evlerine dönmek istemiştir.", "Moni duruma öfkelenmiş, diğer çocuklar ise gülüp geçmiştir.", "Diğer çocuklar yeni top ararken Moni oyunu tamamen bırakmıştır."], "a": 0}, {"t": 1, "q": "Metinde geçen \"oynayan herkes çok üzülmüştü\" durumunun oluşması \"çocukların toplarının patlaması\"na bağlanmıştır. Buna göre altı çizili olaylar metindeki hangi unsura örnektir?", "o": ["Kişi ve Mekân", "Zaman ve Olay", "Neden ve Sonuç", "Görüş ve Karşıtlık"], "a": 2}, {"t": 1, "q": "Moni'nin \"Topsuz basketbol maçı yapabiliriz.\" önerisini nasıl yorumlamalıyız?", "o": ["Gerçek bir basketbol topunun çok pahalı olduğunu anlatmaya çalışmaktadır.", "Eğlenmek ve oyunu sürdürmek için sadece fiziksel bir nesneye değil, hayal gücüne ve isteğe de ihtiyaç olduğunu savunmaktadır.", "Oyunların sadece sıkı kurallara bağlı kalınarak oynanabileceğini düşünmektedir.", "Arkadaşlarıyla oyun oynamak istemediği için bahaneler üretmektedir."], "a": 1}, {"t": 1, "q": "Moni'nin karşılaştığı sorun karşısında pes etmeyip arkadaşlarına \"hayalî bir topla oynama\" fikrini sunması nasıl değerlendirilmelidir?", "o": ["Sorunlar karşısında umutsuzluğa kapılmak yerine, grubu bir arada tutan ve hayal gücünü çalıştıran olumlu, takdir edilesi bir davranıştır.", "Kuralları bozduğu için arkadaşlarına kötü örnek olan yanlış bir davranıştır.", "Gerçeklerden kaçtığını gösteren, oyunun ciddiyetini bozan tutarsız bir yaklaşımdır.", "Sadece kendi dediğini yaptırmak isteyen bencilce bir tutumdur."], "a": 0}, {"t": 1, "q": "Oyunda aniden top patlaması gibi bir kriz anında, Moni'nin bulduğu \"hayalî topla oynama\" çözümü dışında en mantıklı ve birleştirici çözüm aşağıdakilerden hangisi olabilirdi?", "o": ["Topu patlatan çocuğu suçlayıp onu oyundan atmak.", "Topsuz asla oynanmaz diyerek herkesin sessizce evine gitmesini söylemek.", "Hep birlikte oturup, top gerektirmeyen (örneğin saklambaç, körebe gibi) yeni bir oyun belirleyip eğlenceye devam etmek.", "Başka bir gruptan izinsiz şekilde top alıp oynamak."], "a": 2}, {"t": 1, "q": "Moni'nin yerinde siz olsaydınız, arkadaşlarınızı oyunun bitmediğine ikna etmek için nasıl bir yazılı/sözlü çözüm cümlesi kurardınız?", "o": ["\"Topumuz yoksa basketbol da yok, maalesef eğlence buraya kadarmış.\"", "\"Topumuz patladı diye eğlencemiz bitmez, gelin hayal gücümüzü kullanarak en güzel maçı biz yapalım!\"", "\"Yeni bir top alana kadar hiç kimse benimle konuşmasın.\"", "\"Bana hemen yeni bir top bulmazsanız bir daha bu sahaya gelmem.\""], "a": 1}, {"t": 2, "q": "Adamın yavru bülbülü yanına alıp kafese koymasıyla ilgili olarak metnin derin anlamından hangisi çıkarılabilir?", "o": ["Adam kuşlara eziyet etmekten büyük bir keyif almaktadır.", "Adam, kuşu satarak yüklü bir altın kazanmayı hedeflemiştir.", "Bülbül, kafesin içinde ormandaki doğal hayatından daha mutludur.", "Adamın niyeti kuşu korumak olsa da, iyilik yaparken aslında onun özgürlüğünü kısıtlamıştır."], "a": 3}, {"t": 2, "q": "Anne bülbülün yavrusunu ilk kaybettiğindeki durumu ile onu handa kafesin içinde bulduğundaki durumu karşılaştırıldığında aşağıdakilerden hangisi söylenebilir?", "o": ["İlkinde endişeli ve çaresizdir; ikincisinde ise ne yapacağını bilen, evladını kurtarmak için harekete geçen cesur bir annedir.", "İlkinde çok rahattır, ikincisinde korku içindedir.", "İki durumda da bezirgâna karşı büyük bir öfke duymuştur.", "İlkinde yavrusunu aramaktan vazgeçmiş, ikincisinde ise tesadüfen onu izlemiştir."], "a": 0}, {"t": 2, "q": "Bu metin parçasında yer alan unsurlarla ilgili yapılan aşağıdaki eşleştirmelerden hangisi yanlıştır?", "o": ["Olay: Yaralanan yavru bülbülün bezirgân tarafından alınıp kafese konması ve annesinin onu bulması", "Kişiler/Kahramanlar: Anne bülbül, bezirgân, yavru bülbül", "Neden-Sonuç: Kuşun şarkı söylememesi yüzünden adamın onu kafese kilitlemesi", "Yer: Orman ve han"], "a": 2}, {"t": 2, "q": "Adamın, \"Ben onun kanadını sardım. İyileşince ormana getirecektim.\" sözünü nasıl yorumlamalıyız?", "o": ["Adam, anne bülbülü kandırmak için bilerek yalan söylemektedir.", "Adam, asıl niyetinin kötü olmadığını, sadece kuşu tedavi etmeyi amaçladığını ifade ederek kendini savunmaktadır.", "Adam kuşu tamamen evcilleştirmeyi başardığını anlatmaktadır.", "Adam, kuşu annesinden fidye almak için bilerek saklamıştır."], "a": 1}, {"t": 2, "q": "Adamın yavru bülbülü tedavi etmek amacıyla bir kafese kapatması durumu değerlendirildiğinde aşağıdakilerden hangisi en tutarlı eleştiri olur?", "o": ["Kuşların kafeste yaşaması daha güvenli olduğu için adam en mükemmel davranışı sergilemiştir.", "Hayvanlara yardım ederken onların doğal ortamından koparılmaması ve kafese hapsedilmemesi gerektiği gerçeği adam tarafından göz ardı edilmiştir.", "Adamın tek hatası kuşa kendi yediği yemeklerden vermemesidir.", "Anne bülbülün uçamayan yavrusuna hemen sahip çıkamaması tamamen annenin kusurudur."], "a": 1}, {"t": 2, "q": "Yavru bülbülün yaralanıp uçamaması sorununa karşı adamın üretebileceği en mantıklı ve kuşa en az zarar verecek çözüm aşağıdakilerden hangisi olabilirdi?", "o": ["Kuşu tedavi edip kafese koymak yerine, ormanda annesinin hemen bulabileceği yüksek ve güvenli bir dala yerleştirmek.", "Kuşu hemen orada yağmurun altında bırakıp doğanın kanununa terk etmek.", "Kuşu alıp yaşadığı şehrin en uzak köşesine götürerek ona yeni bir hayat kurmak.", "Kuşun diğer kardeşlerini de yakalayarak hepsini aynı kafeste birleştirmek."], "a": 0}, {"t": 2, "q": "Bezirgân, kuşu tedavi için aldığında annesi bulabilsin diye ormana bir not bıraksaydı, en uygun \"açıklama/çözüm\" cümlesi hangisi olurdu?", "o": ["\"Kuşunuzu çok beğendim, artık elinize geçmeyecek.\"", "\"Yavrunuzun kanadı kırılmıştı, onu güvende tutmak için yanıma aldım, iyileştiği an bulunduğunuz yere geri getireceğim.\"", "\"Eğer yavrunuzu bir daha görmek istiyorsanız bana her gün şarkı söyleyeceksiniz.\"", "\"Ormanda bulduğum bu zayıf kuşu büyük şehirde satmayı düşünüyorum.\""], "a": 1}, {"t": 3, "q": "Kangurunun bu yeni oyunda birinci olmasından yola çıkarak aşağıdaki üst düzey çıkarımlardan hangisine ulaşılabilir?", "o": ["Gözleri görmeyen bireylerin hayatlarında sadece tek bir oyunda başarılı olabilecekleri anlaşılır.", "Ormandaki diğer hayvanlar, kanguru üzülmesin diye bilerek yenilmeyi seçmişlerdir.", "Farklılıklarımız ve dezavantaj gibi görünen özelliklerimiz, doğru koşullar sağlandığında en büyük gücümüz ve yeteneğimiz olabilir.", "Sadece görme engelliler nesnelere dokunarak ne olduklarını anlayabilir."], "a": 2}, {"t": 3, "q": "Kangurunun \"Seksek\" oyunundaki durumu ile \"Bil Bakalım Bu Ne?\" oyunundaki durumu karşılaştırıldığında ne söylenebilir?", "o": ["İki oyunda da aynı derecede zorlanmış ve mutsuz olmuştur.", "Seksekte görme duyusu gerektiği için başarısız olmuş, diğer oyunda ise gelişmiş dokunma duyusu ön plana çıktığı için başarılı olmuştur.", "İki oyun da aslında onun için çok kolaydır ancak arkadaşları kuralları değiştirmiştir.", "Kanguru seksek oynamayı daha çok sevdiği için diğer oyunu hiç ciddiye almamıştır."], "a": 1}, {"t": 3, "q": "Metindeki \"Gözlerinin görmemesi\" ve bunun sonucunda \"seksek oynarken kareyi bulamaması\" durumu metnin hangi unsurunu temsil eder?", "o": ["Zaman ve Mekân", "Neden ve Sonuç", "Kişilerin zevkleri ve Olay yeri", "Ana fikir ve Tema"], "a": 1}, {"t": 3, "q": "Hayvanların \"Bil Bakalım Bu Ne?\" oyununda kendi gözlerini kapatmaları nasıl yorumlanmalıdır?", "o": ["Güneşten gözleri kamaştığı için dinlenmek istemişlerdir.", "Oyunu oynamayı bilmedikleri için rastgele hareket etmektedirler.", "Kanguruyla tamamen eşit şartlarda yarışabilmek ve sadece dokunma duyularını kullanmak için böyle davranmışlardır.", "Kangurunun onları görmediğini düşünerek hile yapmaya çalışmışlardır."], "a": 2}, {"t": 3, "q": "Ormandaki hayvanların kanguruya engelini hiç hissettirmemesi ve sevindiğinde onu içtenlikle tebrik etmeleri davranışı nasıl değerlendirilmelidir?", "o": ["Kangurudan korktukları için mecburen sergiledikleri bir tutumdur.", "Kapsayıcı, farklılıklara saygı duyan ve empati dolu gerçek bir dostluk örneğidir.", "Ona acıdıkları için yalan söylediklerini gösteren, yanlış ve kırıcı bir yaklaşımdır.", "Kanguruyu kendi aralarından uzaklaştırmak için kurdukları bir plandır."], "a": 1}, {"t": 3, "q": "Kangurunun seksek oynarken taşı attığı kareyi görememesi sorununa, ormandaki arkadaşlarının üretebileceği en uygun çözüm nedir?", "o": ["Seksek oynamayı tamamen yasaklayıp herkesin evine dönmesi.", "Çizilen seksek karelerinin kenarlarına kalın ağaç dalları veya ipler koyarak, kangurunun ayaklarıyla sınırları hissetmesini sağlamak.", "Kanguruya kızıp onu bir daha seksek oyununa davet etmemek.", "Taşı kangurunun yerine başkasının atması ve oyunu başkasının oynaması."], "a": 1}, {"t": 3, "q": "Kanguru, kendisini yetenekli hissettiren bu oyun sonrası arkadaşlarına hislerini anlatan bir not yazsaydı, en uygun ifade hangisi olurdu?", "o": ["\"Seksek oynarken bana yardım etmediğiniz için hepinize kırgınım.\"", "\"Benim de güçlü yanlarımı gösterebileceğim, hepimizin eşit olduğu bu oyunu bulduğunuz için size sonsuz teşekkür ederim.\"", "\"Bundan sonra sadece benim kazandığım oyunları oynayalım, diğerlerini yasaklayalım.\"", "\"Siz de gözlerinizi bağlayarak yaşarsanız benim çektiklerimi anlarsınız.\""], "a": 1}, {"t": 4, "q": "Öğretmen Ali Bey'in, emekli olmasına rağmen kendi torunu olmayan çocuklara uçurtma yapıp onlarla koşması onun hakkında neyi gösterir?", "o": ["Çocuklara duyduğu içten sevginin okul sınırlarını aştığını ve yaşama sevincini onlarda bulduğunu.", "Emeklilik maaşı yetmediği için çocuklara uçurtma satarak para kazandığını.", "Mahallede ondan başka yetişkin yaşamadığını.", "Uçurtma uçurmanın sadece yaşlılara özgü bir hobi olduğunu."], "a": 0}, {"t": 4, "q": "Uçurtmaları ilk uçurdukları andaki çocukların duyguları ile Deniz'in uçurtmayı kaçırdığı andaki duyguları karşılaştırıldığında aşağıdakilerden hangisi doğrudur?", "o": ["İki durumda da çocuklar öğretmene kızgın ve öfkelidir.", "İlk başta herkeste büyük bir coşku ve neşe varken, ikinci durumda Deniz hayal kırıklığı ve çaresizlik yaşamıştır.", "İlkinde çocuklar korku içindeyken, ikincisinde Deniz uçurtması kurtulduğu için sevinmiştir.", "İki durumda da çocukların umurunda olan tek şey yorulmadan eve dönmektir."], "a": 1}, {"t": 4, "q": "Metinde yer alan \"Ali Bey\", \"Papatyalı tepeler\" ve \"Deniz'in uçurtmasını kaçırması yüzünden ağlaması\" ifadeleri sırasıyla hangi hikâye unsurlarına örnektir?", "o": ["Kişi – Mekân (Yer) – Neden/Sonuç", "Mekân (Yer) – Zaman – Olay", "Olay – Zaman – Kişi", "Kişi – Olay – Zaman"], "a": 0}, {"t": 4, "q": "Öğretmenin, Deniz'e \"Sana yeniden öyle güzelini yapacağım ki gökyüzünde süzülürken tüm kuşlar onu kıskanacak.\" demesi nasıl yorumlanmalıdır?", "o": ["Öğretmenin kuşlardan nefret ettiğini göstermektedir.", "Öğretmenin yeni bir uçurtma yapma konusunda yeteneksiz olduğunu gizleme çabasıdır.", "Çocuğun uçurtmasını kaybetmesinden doğan üzüntüsünü sevimli ve abartılı bir sözle dindirme isteğidir.", "Deniz'e bir daha asla uçurtma yapmayacağının üstü kapalı ifadesidir."], "a": 2}, {"t": 4, "q": "Deniz'in uçurtması kaçtığında öğretmenin ona kızmak yerine \"Üzülme, yenisini yapacağım.\" demesi nasıl değerlendirilmelidir?", "o": ["Çocuğun hatasını görmezden gelerek onu şımartan yanlış bir davranıştır.", "Çocuğun elinde olmayan bir kazadan dolayı duyduğu üzüntüyü anlayan, empati kuran şefkatli bir yaklaşımdır.", "Öğretmenin uçurtma yapmaktan tamamen sıkıldığını ve bu yüzden çocuğu baştan savdığını gösterir.", "Çocuğun daha çok ağlamasına ve hırçınlaşmasına sebep olacak kışkırtıcı bir sözdür."], "a": 1}, {"t": 4, "q": "Uçurtmasını kaçıran ve \"Şimdi istiyorum!\" diye direten Deniz'in o anki üzüntüsünü hafifletmek için üretilebilecek en uygun anlık çözüm aşağıdakilerden hangisidir?", "o": ["Başka bir çocuğun uçurtmasını elinden zorla alıp Deniz'e vermek.", "Deniz'e o an diğer çocuklarla birlikte aynı uçurtmanın ipini tutma fırsatı sunarak onu oyuna yeniden dâhil etmek.", "Uçurtmayı kaçırdığı için Deniz'i azarlayarak onu yalnız başına eve göndermek.", "Kaçan uçurtmanın peşinden saatlerce koşup onu gökyüzünden indirmeye çalışmak."], "a": 1}, {"t": 4, "q": "Öğretmen Ali Bey, bu olayın ardından çocuklara uçurtmalarına sahip çıkmaları için küçük bir not yazsaydı, en uygun tavsiye cümlesi hangisi olurdu?", "o": ["\"Uçurtmasını kaçıranlar bir daha benimle kırlara gelmesin.\"", "\"Rüzgâr uçurtmamızı yücelere taşımak ister; ipinizi sıkı tutun ki hayalleriniz sizden uzaklaşmasın.\"", "\"Uçurtma uçurmayı bilmeyen beceriksizler yüzünden bugün çok yoruldum.\"", "\"Artık uçurtma yapmayacağım, herkes kendi uçurtmasını parasıyla alsın.\""], "a": 1}, {"t": 5, "q": "Sığırtmaç Mustafa'nın, verilen parayı doğrudan almak yerine kendi cevizlerini satarak karşılığında almayı teklif etmesi onun hangi özelliğini gösterir?", "o": ["Aslında cevizleri sevmediği için onlardan kurtulmaya çalıştığını.", "Emeği olmadan hak etmediği bir parayı kabul etmeyen onurlu ve dürüst bir karakterde olduğunu.", "Kendisine verilen parayı çok az bulduğu için pazarlık yapmaya çalıştığını.", "Büyüklerle nasıl konuşulması gerektiğini bilmediğini."], "a": 1}, {"t": 5, "q": "Sığırtmaç Mustafa'nın atlıları uzaktan ilk gördüğündeki düşüncesi ile yaklaştıklarındaki düşüncesi karşılaştırıldığında ne söylenebilir?", "o": ["İlk başta mutlu olmuş, yaklaştıklarında ise onlardan çok korkup kaçmıştır.", "Uzaktan gördüğünde \"Neler oluyor?\" diye şüphelenmiş, yaklaştıklarında ise onların iyi giyimli olduğunu görüp rahatlamıştır.", "İlk başta onları soyguncu sanmış, yaklaştıklarında ise sadece su istediklerini düşünüp öfkelenmiştir.", "İki durumda da atlıları hiç umursamamış ve sığırlarını otlatmaya devam etmiştir."], "a": 1}, {"t": 5, "q": "\"Atatürk ve kurmaylarının yolu kaybetmesi\" olayı ile \"Sığırtmaç Mustafa'nın onlara çiftliğe giden yolu tarif etmesi\" metinde sırasıyla hangi unsurları oluşturur?", "o": ["Problem ve Çözüm (Neden-Sonuç)", "Zaman ve Kişi", "Yer (Mekân) ve Olay", "Ana Fikir ve Başlık"], "a": 0}, {"t": 5, "q": "Atatürk'ün, \"Çocuğun sararmış benzi ve şiş karnı\"na dikkatlice bakıp onun sağlığı hakkında endişelenmesi nasıl yorumlanmalıdır?", "o": ["Çocuğun kıyafetlerini hiç beğenmediği şeklinde yorumlanmalıdır.", "Liderin yüksek gözlem yeteneğine sahip olduğunu ve halkının durumuna duyarlı, şefkatli bir insan olduğunu gösterir.", "Atatürk'ün çocuklarla konuşmaktan sıkıldığı anlamına gelir.", "Sadece sağlıklı çocuklarla ilgilenmek istediğini gösterir."], "a": 1}, {"t": 5, "q": "Sığırtmaç Mustafa'nın \"Bu para çok, nereden aldın diye bana hesap sorarlar.\" diyerek parayı reddetmesi nasıl değerlendirilmelidir?", "o": ["Çocuğun büyüklerinden korktuğu için aslında çok istediği parayı alamaması zavallı bir durumdur.", "Haksız kazanç sağlamanın yanlışlığını bilen, ailesinin güvenini sarsmak istemeyen çok erdemli ve ahlaklı bir tutumdur.", "Atatürk'ü tanımadığı için onun verdiği paranın sahte olduğunu düşünmesi kurnazcadır.", "Çocuğun daha fazla para koparmak için numara yaptığını gösteren yanlış bir harekettir."], "a": 1}, {"t": 5, "q": "Çocuğun hak etmediği parayı almak istememesi sorununa karşı, Atatürk'ün çocuğun cevizlerini satın almayı kabul etmesi (takas yapması) nasıl bir çözümdür?", "o": ["Çocuğun gururunu incitmeden, onun emeğini değerli kılarak parayı kabul etmesini sağlayan saygılı ve akılcı bir çözümdür.", "Çocuğu kandırmak için yapılmış geçici ve baştan savma bir çözümdür.", "Atatürk'ün aslında çok aç olduğu için kendi menfaatini düşündüğü bir çözümdür.", "Çocuğa zorla ceviz sattırarak onu ticarete iten yanlış bir karardır."], "a": 0}, {"t": 5, "q": "Sığırtmaç Mustafa büyüdüğünde bu olayı anlatan bir anı yazısı kaleme alsaydı, bu durumu özetleyen en uygun \"çıkarım/sonuç\" cümlesi hangisi olurdu?", "o": ["\"O gün yollarını kaybeden o adamlara keşke yanlış yolu tarif etseydim.\"", "\"Büyük Atatürk'ten öğrendiğim en önemli ders, emeğin karşılığı olmayan hiçbir şeyin kalıcı bir değer taşımadığıdır.\"", "\"Keşke o cevizleri vermeden o parayı alıp hemen oradan kaçsaydım.\"", "\"Büyük insanların verdiği her şeyi hiçbir şey sormadan hemen kabul etmeliyiz.\""], "a": 1}, {"t": 6, "q": "Hüseyin'in, mektubunda annesinin geçmişteki göç acılarını hatırlatmasının satır arasındaki derin amacı nedir?", "o": ["Annesini geçmiş günleri hatırlatarak daha fazla üzüp ağlatmak istemektedir.", "Vatan savunmasının ne kadar hayati olduğunu ve o acı günlerin bir daha yaşanmaması için oraya gittiğini vurgulamaktır.", "Annesinin onlara iyi bakamadığını söyleyerek onu gizlice suçlamaktır.", "Savaş bitince annesiyle birlikte tekrar Manastır'a taşınmak istediğini belli etmektir."], "a": 1}, {"t": 6, "q": "Cephedeki askerlerin fiziksel şartları (soğuk, kar) ile ruhsal durumları (vatan aşkı) karşılaştırıldığında metinden hangi sonuca ulaşılır?", "o": ["Dondurucu soğuklar nedeniyle bütün askerlerin savaşma isteği tamamen yok olmuştur.", "Askerler ruhsal olarak çökmüş, sadece fiziksel olarak güçlü kalmaya çalışmışlardır.", "Kış mevsimi askerlerin savaşmasını tamamen engellemiş, cepheyi dondurmuştur.", "Aşırı zorlu fiziksel şartlara rağmen, içlerindeki kuvvetli vatan sevgisi onlara dayanma gücü ve cesaret vermektedir."], "a": 3}, {"t": 6, "q": "Mektupta geçen \"Afyon İstasyonu\", \"Mart 1920\", \"Komutanların askerlerle ilgilenmesi\" ifadeleri sırasıyla metnin hangi unsurlarıdır?", "o": ["Kişiler – Yer – Olay", "Yer (Mekân) – Zaman – Olay", "Zaman – Olay – Yer (Mekân)", "Olay – Kişiler – Zaman"], "a": 1}, {"t": 6, "q": "Hüseyin'in \"Kadınlar, çocuklar vatansız kalmasın diye gidiyoruz cepheye.\" sözünü nasıl yorumlamalıyız?", "o": ["Savaşın sadece kendi ailesini zenginleştirmek için yapıldığını düşündüğünü gösterir.", "Savaşmaktan başka bir mesleği olmadığı için mecburen orada bulunduğunu ifade eder.", "Savaşın aslında milletin özgürlüğü, geleceği ve masumları korumak adına yapılan yüce bir fedakârlık olduğunu belirtir.", "Kadınların ve çocukların da cepheye gelip onlarla birlikte savaşması gerektiğini vurgular."], "a": 2}, {"t": 6, "q": "Yoksulluk içindeki halkın istasyonlarda askerlere elindeki son yiyeceği vermesi ve \"Vatan sağ olsun!\" demesi nasıl değerlendirilmelidir?", "o": ["Halkın yiyecekleri askerlere zorla sattığını gösteren ticari bir faaliyettir.", "Türk milletinin birlik, beraberlik ve büyük bir dayanışma içinde vatanı için her şeyini feda edebildiğini gösteren onurlu bir davranıştır.", "Halkın askerlerden korktuğu için zorla yiyecek vermek zorunda kaldığını gösterir.", "Askerlerin açgözlülük yaparak halkın elindeki her şeyi aldığını kanıtlar."], "a": 1}, {"t": 6, "q": "\"Geceleri çadırın içi bile çok soğuk oluyor, cephedeki kardeşlerimiz şimdi ne yapıyordur diye düşünmekten uyku girmiyor gözüme.\" diyen Hüseyin'in hissettiği bu çaresizlik problemine karşı en mantıklı çözüm/telkin ne olabilir?", "o": ["\"Onları düşünmeyi tamamen bırak, sadece kendini soğuktan korumaya ve kendi hayatına bak.\"", "\"Bizler burada iyi talim yapıp güçlenirsek, onlara en büyük desteği savaş meydanında vermiş oluruz; bu yüzden güçlü kalmalıyız.\"", "\"Uyuyamıyorsan hemen silahını bırak ve cepheden kaçıp eve dön.\"", "\"Savaşı asla kazanamayacağımızı kabul edip her gün ağlamaya devam etmeliyiz.\""], "a": 1}, {"t": 6, "q": "Hüseyin, kendisini merak eden annesini rahatlatmak ve ona umut olmak için mektubun sonuna en uygun hangi cümleyi yazmalıdır?", "o": ["\"Durumumuz çok kötü, her an yenilebiliriz, buralardan kaçmaya hazırlıklı ol.\"", "\"Gözün arkada kalmasın anam; inancımız tam, bu kara kışın sonu aydınlık bir zafer olacak!\"", "\"Beni merak etme ama yiyecek hiçbir şeyimiz yok, hepimiz hastayız.\"", "\"Keşke buraya hiç gelmeseydim, ilk fırsatta her şeyi bırakıp döneceğim.\""], "a": 1}, {"t": 7, "q": "Tolga'nın araştırma yaptıktan sonra \"hiçbir yemeğe ön yargılı davranmadığını\" söylemesi, onun değişimiyle ilgili bize satır arasından hangi derin anlamı verir?", "o": ["Öğretmeninden korktuğu için sevmediği hâlde seviyormuş gibi yalan söylediğini.", "Bilgi eksikliğinin insanları ön yargıya ittiğini, yeni şeyler öğrenmenin ise davranışlarımızı olumlu yönde değiştirebileceğini.", "Annesi kızmasın diye sadece göz boyamak için araştırma yaptığını.", "Artık makarna yemekten tamamen nefret ettiğini."], "a": 1}, {"t": 7, "q": "Tolga'nın ödevden (projeden) önceki yemek yeme tutumu ile ödevden sonraki tutumu karşılaştırıldığında aşağıdakilerden hangisi doğrudur?", "o": ["Başlangıçta sebzelere karşı ön yargılı ve şikâyetçidir; sonunda ise yeniliklere açık, meraklı ve sağlıklı beslenen biri olmuştur.", "İki durumda da sadece makarna yemek istemiş, hiç değişmemiştir.", "Başta tüm yemekleri seviyordu, sonunda sebzelerden tamamen nefret etmeye başladı.", "Başta annesini dinliyordu, sonunda öğretmenini suçlayarak yemek yemeyi tamamen bıraktı."], "a": 0}, {"t": 7, "q": "Metinde yer alan \"Tolga\", \"Çocukların sebze yememe sorunu\", \"Öğretmenin araştırma ödevi vermesi\" ifadeleri sırasıyla hangi metin unsurlarını örneklendirir?", "o": ["Olay – Mekân – Zaman", "Kişi – Problem – Çözüm Yolu", "Zaman – Olay – Sonuç", "Kişi – Mekân – Neden"], "a": 1}, {"t": 7, "q": "Tolga'nın \"Ben yemekten kaçarken kendimi yemeklerin hikâyesinin içinde buldum, yağmurdan kaçarken doluya tutuldum.\" sözünü nasıl yorumlamalıyız?", "o": ["Yağmurlu bir günde dışarıda yemek yemek zorunda kaldığını anlatmaktadır.", "Yemek yerken sürekli üstünü kirlettiğini ve hastalandığını ifade eder.", "Yemek yemeği sevmediği hâlde, aldığı ödev yüzünden yemeklerin dünyasını derinlemesine incelemek ve onlarla yüzleşmek zorunda kaldığını esprili bir dille anlatır.", "Annesinin ona ceza olarak her gün ıspanak pişirdiğini belirtmektedir."], "a": 2}, {"t": 7, "q": "Öğretmenin çocuklara doğrudan \"Şunları yiyeceksiniz!\" diyerek baskı yapmak yerine, \"Sevmediğiniz yiyeceklerin hikâyesini araştırın ve bir kere tadın.\" diyerek ödev vermesi nasıl değerlendirilmelidir?", "o": ["Öğrencilerin kendi araştırmaları ve keşifleriyle doğruyu bulmalarını sağlayan, ezberci olmayan çok etkili ve yapıcı bir yöntemdir.", "Öğrencileri aşırı derecede zorlayan, baskıcı ve son derece yanlış bir eğitim yöntemidir.", "Öğretmenin kendi bilmediği konuları öğrencilere araştırtarak işten kaçtığını gösterir.", "Sadece yemek tarifleri öğrenilmesini amaçlayan, sağlıkla ilgisi olmayan gereksiz bir yaklaşımdır."], "a": 0}, {"t": 7, "q": "\"Sofrada sürekli sevmediği bir yemek olduğu için aç kalma tehlikesi yaşayan\" ve yemek seçen bir çocuğa sunulabilecek en mantıklı çözüm hangisidir?", "o": ["Sadece abur cubur veya makarna yemesine izin vererek sorunu görmezden gelmek.", "Çocuğu sofradan aç bir şekilde kovarak onu cezalandırmak.", "Yemeğin faydalarını eğlenceli bir hikâye ile anlatıp, tabağına farklı ve neşeli bir sunum yaparak yemeği denemesini teşvik etmek.", "Çocuğun sevmediği hiçbir yemeği bir daha o eve sokmamak."], "a": 2}, {"t": 7, "q": "Tolga, kendisi gibi ıspanak yemeyen ve sebze seçen bir arkadaşına tavsiye yazısı yazsaydı en etkili cümle hangisi olurdu?", "o": ["\"Ispanak gerçekten çok kötü kokuyor, bence sen de kesinlikle yeme.\"", "\"Ben de eskiden sebze sevmezdim ama vücudumuzun bu besinlere neden ihtiyaç duyduğunu araştırıp öğrenince fikrim değişti, sen de onlara bir şans vermelisin.\"", "\"Annelerimiz bizi zorladığı için mecburen yutuyoruz, yapacak bir şey yok.\"", "\"Sadece şeker ve makarna yiyerek de çok sağlıklı olabilirsin, sebzeleri çöpe atabilirsin.\""], "a": 1}, {"t": 7, "q": "Metindeki \"çocukların sağlıklı beslenmeye ön yargılı olması\" problemini çözecek ve onları teşvik edecek bir slogan yazılması istenseydi en uygun seçenek hangisi olurdu?", "o": ["\"Sebzeyi sevme, sadece zorla yut!\"", "\"Ön yargını kır, tabağındaki renkli mucizeyi ve sağlığı keşfet!\"", "\"Sadece makarna ye, hayatın tadını çıkar!\"", "\"Sağlıklı olmak için lezzetsiz şeyleri yemek zorundayız.\""], "a": 1}];
+const TEXTS = {"1": {"title": "Metin 1 — Moni ve Patlayan Top", "body": "Moni, oyunlarda karşılaştığı problemleri çok severdi. Bir gün, kasabada basketbol maçı yaparken çocukların topları patladı. Herkes çok üzülmüştü, \"Keşke patlamasaydı.\" diyorlardı. Moni ise o esnada \"Ne yapabilirim acaba?\" diye düşünüyordu. \"Topsuz basketbol maçı yapabiliriz.\" dedi. Çocuklar bu ilginç fikri duyunca çok şaşırdılar ancak Moni \"Çantamdan top çıktı!\" diye bağırınca hepsi neşeli bir koşturmacayla, hayallerindeki topla birbirlerine pas atmaya başladılar."}, "2": {"title": "Metin 2 — Yavru Bülbül ve Bezirgân", "body": "Ormanda çıkan bir fırtınada yavru bülbülün kanadı yaralandı ve uçamadı. Oradan geçen bir bezirgân (tüccar) kuşu aldı ve bir hana götürdü. Günler sonra anne bülbül, yavrusunu hanın penceresinden kafes içinde gördü. Anne bülbül hüzünle yavrusunu geri isteyince adam gülümsedi ve \"Ben onun kanadını sardım, iyileşince ormana getirecektim. Misafirim olun, yavrunuz iyileşene kadar bana o güzel sesinizi hediye edin yeter.\" dedi."}, "3": {"title": "Metin 3 — Görme Engelli Kanguru", "body": "Ormandaki minik kanguru görme engelli olduğu için arkadaşlarıyla seksek oynarken taşın düştüğü kareyi bulmakta çok zorlanıyordu. Ancak onun da en büyük hayali, yarışmalı bir oyunda kazanmaktı. Bir gün ormandaki hayvanlar \"Bil Bakalım Bu Ne?\" adlı yeni bir oyun oynamaya karar verdiler. Herkes gözlerini sıkıca kapatarak, kendilerine verilen nesneyi sadece dokunarak tanımaya çalışacaktı. Oyunun sonunda her şeyi elleriyle dokunarak tanımaya zaten alışkın olan kanguru birinci oldu. Arkadaşları onun bu başarısını içtenlikle tebrik ettiler."}, "4": {"title": "Metin 4 — Öğretmen Dede ve Uçurtmalar", "body": "Emekli öğretmen Ali Bey, öğrencilerden uzak kalamıyordu. Baharın gelişiyle mahalledeki çocuklar için on iki tane rengârenk uçurtma yaptı. Çocukların sevinci onun da sevinciydi. Uçurtmaları papatyalı tepelerde uçururken küçük Deniz bir ara yumağı iyi tutamadı ve uçurtmanın ipini elinden kaçırdı. Uçurtma gökyüzünde süzülüp gidince Deniz ağlamaklı bir sesle \"Öğretmen Dede, yakala onu, şimdi istiyorum!\" diye bağırdı. Öğretmen, \"Üzülme, sana yeniden öyle güzelini yapacağım ki kuşlar onu kıskanacak.\" diyerek Deniz'i yatıştırdı."}, "5": {"title": "Metin 5 — Atatürk ve Sığırtmaç Mustafa", "body": "Gazi Mustafa Kemal ve kurmayları Yalova'da gezerken ormanlık alanda yollarını kaybettiler. Karşılarına sığır otlatan, solgun yüzlü küçük bir çocuk çıktı. Kendisine Sığırtmaç Mustafa dendiğini söyleyen bu çocuk onlara doğru yolu gösterdi. Atatürk, rehberlik ettiği için teşekkür ederek çocuğa bir miktar para uzattı. Ancak Mustafa \"Bu para çok. Üstelik nereden aldın diye bana hesap sorarlar.\" diyerek parayı almadı. Atatürk ısrar edince, \"Yanımda biraz ceviz var. Eğer onu alırsanız ben de karşılığı olarak bu parayı almayı kabul ederim.\" dedi."}, "6": {"title": "Metin 6 — Asker Hüseyin'in Mektubu", "body": "Asker Hüseyin, 1920 yılında cepheden annesine yazdığı mektupta şöyle diyordu: \"Biz küçüktük, Manastır'dan düşman zulmü yüzünden buralara göç etmiştik, çok acı çekmiştik. Kadınlar, çocuklar bir daha vatansız kalmasın diye cepheye geldim. Burada hava çok soğuk, her yer diz boyu kar ama hepimizin yüreği vatan aşkıyla çarpıyor. İstasyonlarda gözü yaşlı analar ellerindeki son sac ekmeğini bize verip 'Vatan sağ olsun!' dedikçe bizim inancımız daha da artıyor.\""}, "7": {"title": "Metin 7 — Tolga'nın Yemek Macerası", "body": "Tolga, ıspanak ve yoğurt çorbası gibi sebze yemeklerini sevmiyor, her gün makarna yemek istiyordu. Sofraya oturduğunda sevmediği yemekleri görünce ön yargıyla \"Off, nereden çıkmış bu yemek?\" diye isyan ediyordu. Bir gün öğretmeni onlara, \"Sevdiğiniz ve sevmediğiniz yiyeceklerin hikâyesini araştırın, faydalarını öğrenin ve tatlarına yeniden bakın.\" diye bir proje ödevi verdi. Tolga araştırma yaptıkça yemeklerin faydalarını öğrendi, hepsini tattı. Sonuçta artık hiçbir yemeğe ön yargılı davranmayan sağlıklı bir çocuğa dönüştü."}};
+const LETTERS = ["A","B","C","D"];
+let cur = 0;
+let answers = new Array(QUESTIONS.length).fill(null);
+let lastText = null;
+
+const dotsEl = document.getElementById('dots');
+const optsEl = document.getElementById('opts');
+const explainEl = document.getElementById('explain');
+const passageEl = document.getElementById('passage');
+const passageTitleEl = document.getElementById('passageTitle');
+const passageBodyEl = document.getElementById('passageBody');
+const passageToggleEl = document.getElementById('passageToggle');
+
+document.getElementById('passageHead').onclick = ()=>{
+  passageEl.classList.toggle('collapsed');
+  passageToggleEl.textContent = passageEl.classList.contains('collapsed') ? 'GÖSTER ▼' : 'GİZLE ▲';
+};
+
+function buildDots(){
+  dotsEl.innerHTML = '';
+  QUESTIONS.forEach((_,i)=>{
+    const d = document.createElement('div');
+    d.className = 'dot';
+    d.textContent = i+1;
+    d.onclick = ()=>{ cur=i; render(); };
+    dotsEl.appendChild(d);
+  });
+}
+
+function render(){
+  document.getElementById('quiz').style.display='block';
+  document.getElementById('result').classList.remove('show');
+
+  const q = QUESTIONS[cur];
+  const txt = TEXTS[q.t];
+  passageTitleEl.textContent = txt.title;
+  passageBodyEl.textContent = txt.body;
+  // metin değiştiyse otomatik aç
+  if(lastText !== q.t){
+    passageEl.classList.remove('collapsed');
+    passageToggleEl.textContent = 'GİZLE ▲';
+    lastText = q.t;
+  }
+
+  document.getElementById('qnum').textContent = cur+1;
+  document.getElementById('qof').textContent = '/ '+QUESTIONS.length+'. soru';
+  document.getElementById('qtext').textContent = q.q;
+  document.getElementById('pfill').style.width = ((cur+1)/QUESTIONS.length*100)+'%';
+
+  [...dotsEl.children].forEach((d,i)=>{
+    d.className = 'dot';
+    if(answers[i]!==null) d.classList.add('answered');
+    if(i===cur) d.classList.add('current');
+  });
+
+  optsEl.innerHTML='';
+  const chosen = answers[cur];
+  q.o.forEach((text,i)=>{
+    const b = document.createElement('button');
+    b.className='opt';
+    b.innerHTML = '<span class="key">'+LETTERS[i]+'</span><span class="txt">'+text+'</span>';
+    if(chosen!==null){
+      b.classList.add('locked');
+      if(i===q.a) b.classList.add('correct');
+      else if(i===chosen) b.classList.add('wrong');
+    }
+    b.onclick=()=>{
+      if(answers[cur]!==null) return;
+      answers[cur]=i;
+      render();
+    };
+    optsEl.appendChild(b);
+  });
+
+  if(chosen!==null){
+    const ok = chosen===q.a;
+    explainEl.innerHTML = ok ? '<b>Doğru!</b>' : '<b>Doğru cevap '+LETTERS[q.a]+'.</b>';
+    explainEl.classList.add('show');
+  } else {
+    explainEl.classList.remove('show');
+  }
+
+  document.getElementById('prev').disabled = (cur===0);
+  const nextBtn = document.getElementById('next');
+  nextBtn.textContent = (cur===QUESTIONS.length-1) ? 'Testi Bitir ✓' : 'Sonraki →';
+
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+document.getElementById('prev').onclick=()=>{ if(cur>0){cur--;render();} };
+document.getElementById('next').onclick=()=>{
+  if(cur<QUESTIONS.length-1){ cur++; render(); }
+  else { showResult(); }
+};
+
+function showResult(){
+  let ok=0,no=0,empty=0;
+  QUESTIONS.forEach((q,i)=>{
+    if(answers[i]===null) empty++;
+    else if(answers[i]===q.a) ok++;
+    else no++;
+  });
+  const pct = Math.round(ok/QUESTIONS.length*100);
+  document.getElementById('quiz').style.display='none';
+  document.getElementById('result').classList.add('show');
+  document.getElementById('sok').textContent=ok;
+  document.getElementById('sno').textContent=no;
+  document.getElementById('sempty').textContent=empty;
+  document.getElementById('rpct').textContent=pct+'%';
+  document.getElementById('ring').style.setProperty('--p',pct);
+
+  let emoji,title,line;
+  if(pct>=85){emoji='🏆';title='Harikasın!';line='Çok başarılı bir sonuç, tebrikler.';}
+  else if(pct>=60){emoji='🎉';title='Güzel iş!';line='İyi gidiyorsun, birkaç tekrarla daha da yükselirsin.';}
+  else if(pct>=40){emoji='💪';title='Fena değil!';line='Eksik konuları tekrar edersen çok daha iyi olacak.';}
+  else {emoji='📚';title='Tekrar zamanı';line='Üzülme, konuları gözden geçirip tekrar dene.';}
+  document.getElementById('remoji').textContent=emoji;
+  document.getElementById('rtitle').textContent=title;
+  document.getElementById('rline').textContent=line;
+  document.getElementById('pfill').style.width='100%';
+}
+
+document.getElementById('restart').onclick=()=>{
+  answers = new Array(QUESTIONS.length).fill(null);
+  cur=0; lastText=null; render();
+};
+document.getElementById('review').onclick=()=>{ cur=0; lastText=null; render(); };
+
+buildDots();
+render();
+</script>
+</body>
+</html>
